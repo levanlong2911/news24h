@@ -1,0 +1,17 @@
+---
+const skillColor = "red";
+const fontWeight = "bold";
+const textCase = "uppercase";
+---
+
+<style is:global define:vars={{skillColor, fontWeight, textCase}}>
+  h1 {
+    color: purple;
+    font-size: 4rem;
+  }
+  .skill {
+      color: var(--skillColor);
+      font-weight: var(--fontWeight);
+      text-transform: var(--textCase);
+  }
+</style>
