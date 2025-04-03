@@ -2,12 +2,14 @@
 const skillColor = "red";
 const fontWeight = "bold";
 const textCase = "uppercase";
+import '@fontsource-variable/noto-sans';
 ---
 
 <style is:global define:vars={{skillColor, fontWeight, textCase}}>
   h1 {
     color: purple;
     font-size: 4rem;
+    font-family: 'Noto Sans Variable', sans-serif;
   }
   .skill {
       color: var(--skillColor);
@@ -15,3 +17,17 @@ const textCase = "uppercase";
       text-transform: var(--textCase);
   }
 </style>
+
+<nav class="site-nav grid">
+  <h1>
+    <a href="/">NEWS24H</a>
+  </h1>
+  <ul>
+    <li>
+      <a href="/blog/">BLOG</a>
+    </li>
+    <li>
+      <a href="/about/">ABOUT</a>
+    </li>
+  </ul>
+</nav>

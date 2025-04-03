@@ -1,84 +1,325 @@
-html {
-    background-color: #f1f5f9;
-    font-family: sans-serif;
-  }
-  
-  body {
-    margin: 0 auto;
-    width: 100%;
-    max-width: 80ch;
-    padding: 1rem;
-    line-height: 1.5;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
-  
-  h1 {
-    margin: 1rem 0;
-    font-size: 2.5rem;
-  }
 
-/* nav styles */
-
-.hamburger {
-  padding-right: 20px;
-  cursor: pointer;
+/*variables*/
+:root {
+  --primary: #f5f3f3;
+  --secondary: #0A0B5B;
 }
 
-.hamburger .line {
+/*reset */
+body, p, a, ul, li {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  font-family: 'Noto Sans Variable', sans-serif;
+}
+
+li {
+  list-style-type: none;
+  float: left;
+  /* padding-left: 10px; */
+}
+
+li a {
+  
+}
+
+/* base styles */
+body {
+  background: var(--primary);
+  overflow-x: hidden;
+  padding: 15px;
+}
+
+h1,h3 {
+  font-size: 1.2em;
+}
+
+/* fonts */
+@font-face {
+  font-family: 'Noto Sans Variable', sans-serif;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/noto-sans:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+}
+
+/*mobile styles*/
+
+#content {
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+}
+
+#content .grid-content {
+  padding-bottom: 15px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Mobile: Single column */
+  gap: 1rem;
+}
+
+/* .site-nav {
+  margin: 0 20px;
+} */
+
+.site-nav ul {
+  display: none;
+}
+
+.site-nav h1 {
+  grid-column: 1/4;
+  grid-row: 1;
+  font-weight: 900;
+}
+
+/* #content {
+  padding: 0 15px 15px 15px;
+} */
+
+.post-img {
+  grid-column: 1/9;
+}
+
+.post-img img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.posts-title {
+  grid-column: 1/9;
+  grid-row: 2;
+}
+
+.posts-title h3 {
   display: block;
-  width: 40px;
-  height: 5px;
-  margin-bottom: 10px;
-  background-color: #ff9776;
+  margin: 0;
+  padding-bottom: 5px;
+  font-size: 18px;
 }
 
-.nav-links {
-    width: 100%;
-    top: 5rem;
-    left: 48px;
-    background-color: #ff9776;
+span {
+  font-size: 12px;
+  padding-bottom: 5px;
+}
+
+.posts-title .description {
+  font-size: 13px;
+  line-height: 1.2em;
+}
+
+/* Định dạng chung cho grid */
+#silebar { 
+  /* margin: 20px 0;
+  border-top: 2px solid #ccc; */
+}
+
+#silebar h3 {
+  margin: 0;
+}
+
+/* Tiêu đề chính của sidebar */
+.list-post {
+  grid-column: 1 / 9; /* Chiếm toàn bộ chiều rộng lưới */
+  font-size: 1.5em;
+  /* text-align: center; */
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Danh sách bài viết */
+#silebar ul {
+  /* list-style: none; */
+  padding-top: 10px;
+  grid-column: 1 / 9;
+  /* flex-direction: column;
+  gap: 20px; */
+}
+
+#silebar ul li {
+  padding-bottom: 15px;
+}
+
+.list-img {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Hình ảnh */
+.list-img img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* Tiêu đề bài viết */
+.post-title {
+  margin: 0;
+  padding: 5px;
+}
+
+footer {
+  border-top: 2px solid #ccc;
+  display: flex;
+  flex-direction: column; /* Sắp xếp các mục dọc */
+  align-items: center;    /* Căn giữa theo chiều ngang */
+  justify-content: center;
+  text-align: center;
+  padding: 10px 0;
+}
+
+footer .grid {
+  display: flex;
+  flex-direction: column; /* Sắp xếp nội dung theo cột */
+  align-items: center;    /* Căn giữa theo chiều ngang */
+  gap: 20px;              /* Khoảng cách giữa các phần tử */
+}
+
+footer .copyright {
+  grid-column: 1/9;
+  text-align: center;
+}
+
+footer ul {
+  list-style: none;        /* Xóa bullet point */
+  padding: 0;
+  margin: 0;
+  display: flex;           /* Sử dụng flexbox cho <li> */
+  gap: 15px;
+}
+
+footer ul li a {
+  text-decoration: none;   /* Xóa gạch chân */
+  color: black;             /* Màu chữ */
+}
+
+footer ul li a:hover {
+  color: #007bff;
+}
+
+/*
+small table styles
+*/
+@media screen and (min-width: 620px) {
+  /* .nav-links {
+    margin-left: 5em;
+    display: block;
+    position: static;
+    width: auto;
+    background: none;
+  }
+
+  .nav-links a {
+    display: inline-block;
+    padding: 15px 20px;
+  }
+
+  .hamburger {
     display: none;
+  } */
+
+}
+
+/*
+table & laptop
+*/
+@media screen and (min-width: 960px) {
+
+  body {
+    font-size: 18px;
+    width: 100%;
+    max-width: 1060px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    background-color: white;
+  }
+
+  .site-nav {
     margin: 0;
   }
-  
-  .nav-links a {
-    display: block;
-    text-align: center;
-    padding: 10px 0;
-    text-decoration: none;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  
-  .nav-links a:hover,
-  .nav-links a:focus {
-    background-color: #ff9776;
-  }
-  
-  .expanded {
-    display: unset;
-  }
-  
-  @media screen and (min-width: 636px) {
-    .nav-links {
-      margin-left: 5em;
-      display: block;
-      position: static;
-      width: auto;
-      background: none;
-    }
-  
-    .nav-links a {
-      display: inline-block;
-      padding: 15px 20px;
-    }
 
-    .hamburger {
-      display: none;
-    }
-  
+  .site-nav h1 {
+    grid-column: 1/3;
+    font-size: 30px;
+    margin: 0;
+    padding: 10px 0;
   }
+
+  .site-nav ul {
+    display: flex;
+    grid-column: 6/9;
+    justify-content: flex-end;
+    align-self: center;
+  }
+
+  .site-nav ul li {
+    margin-left: 15px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .grid-container {
+    grid-template-columns: 2fr 1fr;
+  }
+  .grid-content {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    padding-bottom: 15px;
+  }
+
+  #content {
+    grid-column: 1 / 2;
+    border: none;
+  }
+
+  .post-img {
+    grid-column: 1/5;
+    gap: 1rem;
+  }
+  
+  .post-img img {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  .posts-title {
+    grid-column: 5/9;
+    grid-row: 1;
+    margin-left: 15px;
+  }
+  
+  .posts-title h3 {
+    display: block;
+    margin: 0;
+    padding-bottom: 5px;
+    font-size: 18px;
+  }
+  
+  span {
+    font-size: 12px;
+    padding-bottom: 5px;
+  }
+  
+  .posts-title .description {
+    font-size: 13px;
+    line-height: 1.2em;
+  }
+
+  #silebar {
+    grid-column: 2 / 3;
+    grid-row: 1;
+  }
+
+}
+
+/* desktop styles*/
+@media screen and (min-width: 1200) {
+
+}
+
