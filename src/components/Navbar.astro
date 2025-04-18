@@ -1,0 +1,28 @@
+---
+---
+<nav class="site-header">
+  <div class="logo">
+    <a href="/">NEWS24H</a>
+  </div>
+
+  <button class="menu-toggle" aria-label="Open menu">☰</button>
+
+  <div class="nav-menu" id="navMenu">
+    <ul class="nav-links">
+      <li><a href="/moto">Contact</a></li>
+      <li><a href="/plane">About</a></li>
+    </ul>
+  </div>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('.menu-toggle');
+      const menu = document.querySelector('#navMenu');
+
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('open');
+      });
+    });
+  </script>
+</nav>
+

@@ -1,120 +1,52 @@
 ---
-
+const response = await fetch('https://lifennew.com/api/posts');
+const jsonData = await response.json();
+console.log(jsonData); // Kiểm tra dữ liệu trả về từ API
+const posts = Array.isArray(jsonData.data) ? jsonData.data : [];
 ---
+
 <div class="grid-container">
     <section id="content">
-        <div class="grid-content">
-            <div class="post-img">
-                <a href="/">
-                    <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro logo on a dark background with a pink glow.'>
-                </a>
-            </div>
-            <div class="posts-title">
-                <h3>
-                    Line-height để dễ dọc, thiết lập trong khoảng 1 - 1.2
-                </h3>
-                <span>
-                    admin, 27-11-2024, tag
-                </span>
-                <p class="description">
-                    Kiểm tra chiều cao dòng, giãn dòng. Chiều cao dòng chữ được thiết lập bởi thuộc tính line-height.
-                </p>
-            </div>
-        </div>
-        <div class="grid-content">
-            <div class="post-img">
-                <a href="/">
-                    <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro logo on a dark background with a pink glow.'>
-                </a>
-            </div>
-            <div class="posts-title">
-                <h3>
-                    Line-height để dễ dọc, thiết lập trong khoảng 1 - 1.2
-                </h3>
-                <span>
-                    admin, 27-11-2024, tag
-                </span>
-                <p class="description">
-                    Kiểm tra chiều cao dòng, giãn dòng. Chiều cao dòng chữ được thiết lập bởi thuộc tính line-height.
-                </p>
-            </div>
-        </div>
-        <div class="grid-content">
-            <div class="post-img">
-                <a href="/">
-                    <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro logo on a dark background with a pink glow.'>
-                </a>
-            </div>
-            <div class="posts-title">
-                <h3>
-                    Line-height để dễ dọc, thiết lập trong khoảng 1 - 1.2
-                </h3>
-                <span>
-                    admin, 27-11-2024, tag
-                </span>
-                <p class="description">
-                    Kiểm tra chiều cao dòng, giãn dòng. Chiều cao dòng chữ được thiết lập bởi thuộc tính line-height.
-                </p>
-            </div>
-        </div>
-        <div class="grid-content">
-            <div class="post-img">
-                <a href="/">
-                    <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro logo on a dark background with a pink glow.'>
-                </a>
-            </div>
-            <div class="posts-title">
-                <h3>
-                    Line-height để dễ dọc, thiết lập trong khoảng 1 - 1.2
-                </h3>
-                <span>
-                    admin, 27-11-2024, tag
-                </span>
-                <p class="description">
-                    Kiểm tra chiều cao dòng, giãn dòng. Chiều cao dòng chữ được thiết lập bởi thuộc tính line-height.
-                </p>
-            </div>
-        </div>
-        <div class="grid-content">
-            <div class="post-img">
-                <a href="/">
-                    <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro logo on a dark background with a pink glow.'>
-                </a>
-            </div>
-            <div class="posts-title">
-                <h3>
-                    Line-height để dễ dọc, thiết lập trong khoảng 1 - 1.2
-                </h3>
-                <span>
-                    admin, 27-11-2024, tag
-                </span>
-                <p class="description">
-                    Kiểm tra chiều cao dòng, giãn dòng. Chiều cao dòng chữ được thiết lập bởi thuộc tính line-height.
-                </p>
-            </div>
-        </div>
+        {posts.length > 0 ? (
+            posts.map((post) => (
+                <div class="grid-content" key={post.id}>
+                    <div class="post-img">
+                        <a href={`/post/${post.slug}`}>
+                            <img src={post.thumbnail || 'https://docs.astro.build/assets/rose.webp'} alt={post.title} />
+                        </a>
+                    </div>
+                    <div class="posts-title">
+                        <a href={`/post/${post.slug}`}>
+                            <h3 class="text-black font-bold">
+                                {post.title}
+                            </h3>
+                        </a>
+                        <span>
+                            <span>{post.admin?.name}, {new Date(post.updated_at).toLocaleDateString()}, {post.category?.name}</span>
+                        </span>
+                        <p class="description">
+                            {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) + "..."}
+                        </p>
+                    </div>
+                </div>
+            ))
+        ) : (
+            <p>No posts available.</p>
+        )}
     </section>
     <section id="silebar">
-        <!-- <div class="list-posts"> -->
-            <h3 class="list-post">POST NEW</h3>
-            <ul>
-                <li>
+        <h3 class="list-post">POST NEW</h3>
+        <ul>
+            {posts.slice(0, 5).map((post) => (
+                <li key={post.id}>
                     <div class="list-img">
-                        <a href="/">
-                            <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro'>
+                        <a href={`/post/${post.id}`}>
+                            <img src={post.thumbnail || 'https://docs.astro.build/assets/rose.webp'} alt={post.title} />
+                            <h4 class="post-title">{post.title}</h4>
                         </a>
-                        <h4 class="post-title">Sử dụng thuộc tính line-height để thiết lập chiều cao box từng dòng chữ, qua đó thiết lập</h4>
                     </div>
                 </li>
-                <li>
-                    <div class="list-img">
-                        <a href="/">
-                            <img src="https://docs.astro.build/assets/rose.webp" alt='The Astro'>
-                        </a>
-                        <h4 class="post-title">Sử dụng thuộc tính line-height để thiết lập chiều cao box từng dòng chữ, qua đó thiết lập</h4>
-                    </div>
-                </li>
-            </ul>
-        <!-- </div> -->
+            ))}
+        </ul>
     </section>
 </div>

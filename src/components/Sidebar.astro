@@ -1,0 +1,24 @@
+---
+import type { Post } from '../types.ts';
+
+const { posts }: { posts: Post[] } = Astro.props;
+---
+
+<section id="silebar">
+  <h3 class="list-post">POST NEW</h3>
+  <ul>
+    {posts.slice(0, 5).map((post) => (
+      <li key={post.id}>
+        <div class="list-img">
+          <a href={`/post/${post.slug}`}>
+            <img
+              src={post.thumbnail || 'https://docs.astro.build/assets/rose.webp'}
+              alt={post.title}
+            />
+            <h4 class="post-title">{post.title}</h4>
+          </a>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>

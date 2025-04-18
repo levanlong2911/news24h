@@ -1,0 +1,47 @@
+---
+import type { Post } from '../types.ts';
+
+const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
+---
+
+<section id="content">
+  <div class="detail-title">
+    <h1>{post.title}</h1>
+  </div>
+  <div class="detail-infor">
+    <p>
+      {post.admin?.name}
+      |
+      {new Date(post.updated_at).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}
+      |
+      {post.category?.name}
+    </p>
+  </div>
+  <div class="detail-content">
+    <article class="post-body" set:html={post.content} />
+  </div>
+</section>
+
+<section class="related-posts">
+  <div class="section-title">
+    <h2>Related Posts</h2>
+  </div>
+  <div class="related-grid">
+    {relatedPosts.slice(0, 6).map((item) => (
+      <div class="related-item" key={item.id}>
+        <a href={`/post/${item.slug}`}>
+          <img
+            src={item.thumbnail || "https://lifennew.com/default.jpg"}
+            alt={item.title}
+            class="related-img"
+          />
+          <h3 class="related-title">{item.title}</h3>
+        </a>
+      </div>
+    ))}
+  </div>
+</section>
