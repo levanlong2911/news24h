@@ -1,28 +1,30 @@
 ---
 ---
 <nav class="site-header">
-  <div class="logo">
-    <a href="/">NEWS24H</a>
-  </div>
+  <div class="container">
+    <div class="logo">
+      <a href="/">NEWS24H</a>
+    </div>
 
-  <button class="menu-toggle" aria-label="Open menu">☰</button>
+    <button class="menu-toggle" aria-label="Toggle menu">☰</button>
 
-  <div class="nav-menu" id="navMenu">
-    <ul class="nav-links">
-      <li><a href="/moto">Contact</a></li>
-      <li><a href="/plane">About</a></li>
+    <ul class="nav-links" id="navMenu">
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/f1">F1</a></li>
+      <li><a href="/technology">Technology</a></li>
     </ul>
   </div>
-
-  <script type="module">
-    document.addEventListener('DOMContentLoaded', () => {
-      const toggle = document.querySelector('.menu-toggle');
-      const menu = document.querySelector('#navMenu');
-
-      toggle.addEventListener('click', () => {
-        menu.classList.toggle('open');
-      });
-    });
-  </script>
 </nav>
+
+<script type="module">
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('#navMenu');
+    toggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+  });
+</script>
+
 
