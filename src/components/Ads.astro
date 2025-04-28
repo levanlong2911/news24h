@@ -1,0 +1,12 @@
+---
+const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
+
+// Fetch quảng cáo server-side
+const ads = await fetch(`/api/ads?position=${position}`)
+  .then(res => res.json())
+  .then(res => res.data || []);
+---
+
+{ads.length > 0 && ads.map((ad, index) => (
+  <div class="ad-container" set:html={ad.script}></div>
+))}

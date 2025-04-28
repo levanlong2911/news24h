@@ -1,9 +1,0 @@
----
-const { post } = Astro.props;
-const postUrl = `/posts/${post.slug}`;
----
-
-<article>
-  <h2><a href={postUrl}>{post.title}</a></h2>
-  <p>{post.description}</p>
-</article>

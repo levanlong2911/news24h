@@ -1,13 +1,25 @@
 ---
 import type { Post } from '../types.ts';
+import Advertisements from '../components/Ads.astro';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
+
+// Nội dung HTML bài viết
+const htmlContent: string = post.content;
+
+// Fetch quảng cáo ở vị trí "middle"
+const ads = await fetch('/api/ads?position=middle')
+  .then(res => res.json())
+  .then(res => res.data);
+
+let adIndex = 0;
 ---
 
 <section id="content">
   <div class="detail-title">
     <h1>{post.title}</h1>
   </div>
+
   <div class="detail-infor">
     <p>
       {post.admin?.name}
@@ -22,7 +34,25 @@ const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props
     </p>
   </div>
   <div class="detail-content">
-    <article class="post-body" set:html={post.content} />
+    {/* Quảng cáo đầu bài viết */}
+    <Advertisements position="top" />
+
+    {/* Nội dung bài viết + chèn quảng cáo giữa bài */}
+    <div class="post-content">
+      {htmlContent.split('</p>').map((segment, index) => (
+        <>
+          <div set:html={segment + '</p>'} />
+          {(index + 1) % 2 === 0 && ads[adIndex] && (
+            <div class="ad-container" set:html={ads[adIndex++].script}></div>
+          )}
+        </>
+      ))}
+    </div>
+
+    {/* Quảng cáo cuối bài */}
+    <div class="post-end-ad">
+      <Advertisements position="bottom" />
+    </div>
   </div>
 </section>
 
