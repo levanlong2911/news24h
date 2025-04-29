@@ -1,12 +1,19 @@
 ---
 const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
 
-// Fetch quảng cáo server-side
-const ads = await fetch(`/api/ads?position=${position}`)
-  .then(res => res.json())
-  .then(res => res.data || []);
+// Server-side fetch with absolute URL
+const baseUrl = Astro.site || import.meta.env.SITE || 'https://lifennew.com';
+let ads: string[] = [];
+
+try {
+  const res = await fetch(`${baseUrl}/api/ads?position=${position}`);
+  const json = await res.json();
+  ads = json.data.map((item: any) => item.script);
+} catch (error) {
+  console.error('Failed to load ads:', error);
+}
 ---
 
 {ads.length > 0 && ads.map((ad, index) => (
-  <div class="ad-container" set:html={ad.script}></div>
+  <div class="ad-container" set:html={ad} />
 ))}
