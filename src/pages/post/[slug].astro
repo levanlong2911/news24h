@@ -5,6 +5,9 @@ import Sidebar from '../../components/Sidebar.astro';
 import type { Post } from '../../types';
 export async function getStaticPaths() {
   const res = await fetch('https://lifennew.com/api/posts');
+  if (!res.ok) {
+    throw new Error(`Failed to fetch posts: ${res.status}`);
+  }
   const json = await res.json();
   return json.data.map((post) => ({
     params: { slug: post.slug }
@@ -17,6 +20,13 @@ const [postRes, listRes] = await Promise.all([
   fetch(`https://lifennew.com/api/posts/${slug}`),
   fetch('https://lifennew.com/api/posts')
 ]);
+
+if (!postRes.ok) {
+  throw new Error(`Failed to fetch post: ${postRes.status}`);
+}
+if (!listRes.ok) {
+  throw new Error(`Failed to fetch posts list: ${listRes.status}`);
+}
 
 const post: Post = await postRes.json();
 const postListJson = await listRes.json();
