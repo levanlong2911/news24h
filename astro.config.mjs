@@ -6,11 +6,14 @@ import compression from 'vite-plugin-compression';  // Thêm plugin nén
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://lifennew.com', // ✅ URL chính thức để SEO, sitemap
-  output: 'server', // Bắt buộc nếu bạn muốn dùng Node adapter để deploy server
+  site: 'https://lifennew.com',
+  output: 'server',
   adapter: node({
-    mode: "standalone", // deploy không cần middleware ngoài
+    mode: "standalone",
   }),
+  experimental: {
+    session: true,
+  },
   integrations: [
     tailwind(),
     sitemap(),
