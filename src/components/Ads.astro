@@ -5,15 +5,9 @@ let ads: string[] = [];
 
 try {
   const res = await fetch(`https://lifennew.com/api/ads?position=${position}`);
-  const text = await res.text();
+  const data = await res.json();
 
-  try {
-    const json = JSON.parse(text);
-    ads = json.data.map((item: any) => item.script);
-  } catch (jsonError) {
-    console.error('⚠️ JSON parse error. Raw response:\n', text);
-    throw jsonError;
-  }
+  ads = data.data.map((item: any) => item.script);
 } catch (error) {
   console.error('❌ Failed to load ads:', error);
 }
