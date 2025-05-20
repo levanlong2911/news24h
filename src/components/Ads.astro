@@ -1,16 +1,21 @@
 ---
 const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
 
-// Server-side fetch with absolute URL
-const baseUrl = Astro.site || import.meta.env.SITE || 'https://lifennew.com';
 let ads: string[] = [];
 
 try {
-  const res = await fetch(`${baseUrl}/api/ads?position=${position}`);
-  const json = await res.json();
-  ads = json.data.map((item: any) => item.script);
+  const res = await fetch(`https://lifennew.com/api/ads?position=${position}`);
+  const text = await res.text();
+
+  try {
+    const json = JSON.parse(text);
+    ads = json.data.map((item: any) => item.script);
+  } catch (jsonError) {
+    console.error('⚠️ JSON parse error. Raw response:\n', text);
+    throw jsonError;
+  }
 } catch (error) {
-  console.error('Failed to load ads:', error);
+  console.error('❌ Failed to load ads:', error);
 }
 ---
 
