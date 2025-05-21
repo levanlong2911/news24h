@@ -4,15 +4,13 @@ const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
 let ads: string[] = [];
 
 try {
-  const res = await fetch(`https://lifennew.com/api/ads?position=${position}`);
+  const res = await fetch(`http://localhost/api/ads?position=${position}`);
   const data = await res.json();
-
   ads = data.data.map((item: any) => item.script);
 } catch (error) {
   console.error('❌ Failed to load ads:', error);
 }
 ---
-
 {ads.length > 0 && ads.map((ad, index) => (
   <div class="ad-container" set:html={ad} />
 ))}
