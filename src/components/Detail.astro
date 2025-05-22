@@ -1,25 +1,25 @@
 ---
 import type { Post } from '../types.ts';
-import Advertisements from '../components/Ads.astro';
+// import Advertisements from '../components/Ads.astro';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
 // Fetch ads for 'middle'
-const baseUrl = Astro.site || import.meta.env.SITE || 'https://lifennew.com';
-let middleAds: string[] = [];
+// const baseUrl = Astro.site || import.meta.env.SITE || 'https://lifennew.com';
+// let middleAds: string[] = [];
 
-try {
-  const res = await fetch(`${baseUrl}/api/ads?position=middle`);
-  const json = await res.json();
-  middleAds = json.data.map((item: any) => item.script);
-} catch (err) {
-  console.error('Error fetching middle ads:', err);
-}
+// try {
+//   const res = await fetch(`${baseUrl}/api/ads?position=middle`);
+//   const json = await res.json();
+//   middleAds = json.data.map((item: any) => item.script);
+// } catch (err) {
+//   console.error('Error fetching middle ads:', err);
+// }
 
 // Split post content to inject ads
-const paragraphs = post.content.split('</p>');
-let adIndex = 0;
+// const paragraphs = post.content.split('</p>');
+// let adIndex = 0;
 ---
-<Advertisements position="top" />
+<!-- <Advertisements position="top" /> -->
 <section id="content">
   <div class="detail-title">
     <h1>{post.title}</h1>
@@ -38,19 +38,19 @@ let adIndex = 0;
     </p>
   </div>
   <div class="detail-content">
-    <!-- <article class="post-body" set:html={post.content} /> -->
-    {paragraphs.map((segment, index) => (
+    <article class="post-body" set:html={post.content} />
+    <!-- {paragraphs.map((segment, index) => (
       <>
         <article class="post-body" set:html={segment + '</p>'} />
         {(index + 1) % 2 === 0 && middleAds[adIndex] && (
           <div class="ad-container" set:html={middleAds[adIndex++]} />
         )}
       </>
-    ))}
+    ))} -->
   </div>
 </section>
 
-<Advertisements position="bottom" />
+<!-- <Advertisements position="bottom" /> -->
 
 <section class="related-posts">
   <div class="section-title">
