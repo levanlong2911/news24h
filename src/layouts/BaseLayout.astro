@@ -3,12 +3,13 @@ import Header from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
+import Ads from '../components/Ads.astro';
 
 const {
   pageTitle = 'News hot 24h',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = 'https://lifennew.com/default.jpg',
-  pageUrl = 'https://lifennew.com',
+  pageImage = 'https://admin.lifennew.com/default.jpg',
+  pageUrl = 'https://admin.lifennew.com',
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
@@ -57,6 +58,7 @@ const {
         })}
       </script>
     )}
+    <Ads position="top"/>
   </head>
 
   <body>
