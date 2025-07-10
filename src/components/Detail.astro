@@ -1,24 +1,45 @@
 ---
-import type { Post } from '../types.ts';
 import Advertisements from '../components/Ads.astro';
+import type { Post } from '../types.ts';
+import { parseDocument } from 'htmlparser2';
+import { DomUtils } from 'htmlparser2';
+import { default as serialize } from 'dom-serializer';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
 
-// Fetch ads for 'middle'
 const baseUrl = Astro.site || import.meta.env.SITE || 'https://admin.lifennew.com';
-let middleAds: string[] = [];
+let ads: string[] = [];
 
 try {
   const res = await fetch(`${baseUrl}/api/ads?position=middle`);
   const json = await res.json();
-  middleAds = json.data.map((item: any) => item.script);
+  ads = json.data.map((item: any) => item.script);
 } catch (err) {
-  console.error('Error fetching middle ads:', err);
+  console.error("Ads fetch error:", err);
 }
 
-// Split post content to inject ads
-const paragraphs = post.content.split('</p>');
+// SSR parse HTML content and inject ads every 2 <p>
+const document = parseDocument(post.content || '');
+const bodyNodes = DomUtils.getChildren(document) || [];
+const resultNodes: any[] = [];
+
+let pCounter = 0;
 let adIndex = 0;
+
+for (const node of bodyNodes) {
+  resultNodes.push(node);
+
+  if (node.type === 'tag' && node.name === 'p') {
+    pCounter++;
+    if (pCounter % 2 === 0 && ads[adIndex]) {
+      const adFragment = parseDocument(`<div class="ad-container">${ads[adIndex++]}</div>`);
+      resultNodes.push(...DomUtils.getChildren(adFragment));
+    }
+  }
+}
+
+document.children = resultNodes;
+const injectedHtml = serialize(document);
 ---
 
 <Advertisements position="top" />
@@ -40,20 +61,11 @@ let adIndex = 0;
   </div>
 
   <div class="detail-content">
-    {paragraphs.map((segment, index) => (
-      <>
-        <div set:html={segment + '</p>'} />
-        {(index + 1) % 2 === 0 && middleAds[adIndex] && (
-          <div class="ad-container" set:html={middleAds[adIndex++]} />
-        )}
-      </>
-    ))}
+    <article class="post-body" set:html={injectedHtml} />
   </div>
 </section>
 
-<div class="post-end-ad">
-  <Advertisements position="bottom" />
-</div>
+<Advertisements position="bottom" />
 
 <section class="related-posts">
   <div class="section-title">
