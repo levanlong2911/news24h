@@ -1,22 +1,12 @@
 ---
-import Advertisements from '../components/Ads.astro';
+import Ads from '../components/Ads.astro';
 import type { Post } from '../types.ts';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
 
-const baseUrl = Astro.site || import.meta.env.SITE || 'https://admin.lifennew.com';
-let middleAds: string[] = [];
-
-try {
-  const res = await fetch(`${baseUrl}/api/ads?position=middle`);
-  const json = await res.json();
-  middleAds = json.data.map((item: any) => item.script);
-} catch (err) {
-  console.error("Error fetching middle ads:", err);
-}
 ---
 
-<Advertisements position="top" />
+<Ads position="top" />
 
 <section id="content">
   <div class="detail-title">
@@ -38,13 +28,11 @@ try {
   <div class="detail-content">
     <article class="post-body" set:html={post.content} />
 
-    {middleAds.length > 0 && middleAds.map((ad, index) => (
-      <div key={index} class="ad-container" set:html={ad}></div>
-    ))}
+    <Ads position="middle" />
   </div>
 </section>
 
-<Advertisements position="bottom" />
+<Ads position="bottom" />
 
 <section class="related-posts">
   <div class="section-title">

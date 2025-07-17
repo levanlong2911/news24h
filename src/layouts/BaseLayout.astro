@@ -1,9 +1,10 @@
 ---
-import Header from '../components/Navbar.astro';
+import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Ads from '../components/Ads.astro';
+import ScriptAds from '../components/ScriptAds.astro';
 
 const {
   pageTitle = 'News hot 24h',
@@ -58,7 +59,7 @@ const {
         })}
       </script>
     )}
-    <Ads position="top"/>
+    <Ads position="top" />
   </head>
 
   <body>
@@ -68,5 +69,6 @@ const {
     </main>
     <Footer />
     <script type="module" src="/scripts/menu.js"></script>
+    <ScriptAds />
   </body>
 </html>

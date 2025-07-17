@@ -1,19 +1,22 @@
 ---
 const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
 
-// Server-side fetch with absolute URL
-const baseUrl = Astro.site || import.meta.env.SITE || 'https://admin.lifennew.com/api/ads';
-let ads: string[] = [];
+const baseUrl = 'https://admin.lifennew.com';
+let scripts: string[] = [];
 
 try {
   const res = await fetch(`${baseUrl}/api/ads?position=${position}`);
   const json = await res.json();
-  ads = json.data.map((item: any) => item.script);
-} catch (error) {
-  console.error('Failed to load ads:', error);
+  scripts = json.data.map((item: any) => item.script);
+} catch (err) {
+  console.error('Error loading ads:', err);
 }
 ---
 
-{ads.length > 0 && ads.map((ad, index) => (
-  <div class="ad-container" set:html={ad} />
+{scripts.length > 0 && scripts.map((script, index) => (
+  <div
+    class="safe-ad-container"
+    data-ad-script={encodeURIComponent(script)}
+    key={index}
+  />
 ))}
