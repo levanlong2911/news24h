@@ -1,0 +1,32 @@
+---
+const { position }: { position: 'top' | 'middle' | 'bottom' } = Astro.props;
+
+const baseUrl = 'https://admin.lifennew.com';
+let scripts: string[] = [];
+
+try {
+  const res = await fetch(`${baseUrl}/api/ads?position=${position}`);
+  const json = await res.json();
+
+  // Lấy ra script thuần túy (bỏ thẻ <script> nếu cần)
+  scripts = json.data.map((item: any) => {
+    const content = item.script?.trim();
+
+    // Nếu chứa <script> thì lấy phần bên trong
+    if (content?.startsWith('<script') && content.includes('</script>')) {
+      const match = content.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+      return match ? match[1].trim() : '';
+    }
+
+    return content;
+  }).filter(Boolean); // Loại bỏ script rỗng
+} catch (err) {
+  console.error(`Error loading ads for position ${position}:`, err);
+}
+---
+
+{scripts.length > 0 && scripts.map((script, index) => (
+  <Fragment set:head>
+    <script key={index} dangerouslySetInnerHTML={script} />
+  </Fragment>
+))}
