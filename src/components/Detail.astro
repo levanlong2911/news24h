@@ -1,12 +1,9 @@
 ---
-import Ads from '../components/Ads.astro';
 import type { Post } from '../types.ts';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
 
 ---
-
-<Ads position="top" />
 
 <section id="content">
   <div class="detail-title">
@@ -28,11 +25,8 @@ const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props
   <div class="detail-content">
     <article class="post-body" set:html={post.content} />
 
-    <Ads position="middle" />
   </div>
 </section>
-
-<Ads position="bottom" />
 
 <section class="related-posts">
   <div class="section-title">

@@ -1,10 +1,8 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
-import HeadAds from '../components/HeadAds.astro';
-import ScriptAds from '../components/ScriptAds.astro';
+import '../styles/global.css';
 
 const {
   pageTitle = 'News hot 24h',
@@ -17,7 +15,36 @@ const {
   authorName = 'News hot 24h',
 } = Astro.props;
 
+let adData: any[] = [];
+try {
+  const res = await fetch('https://admin.lifennew.com/api/ads');
+  if (res.ok) {
+    const json = await res.json();
+    adData = json.data;
+  }
+} catch (err) {
+  console.error('Ad API fetch error:', err);
+}
 
+// 🔹 Chỉ xử lý `top` để tách script vào <head>
+function extractScripts(adScript: string) {
+  const scriptTags = [...adScript.matchAll(/<script[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi)];
+  const headScripts = scriptTags.map(m => m[0]);
+  const bodyHtml = adScript.replace(/<script[^>]*src=["'][^"']+["'][^>]*><\/script>/gi, '');
+  return { headScripts, bodyHtml };
+}
+
+const topAds = adData
+  .filter(ad => ad.position === 'top')
+  .map(ad => extractScripts(ad.script));
+
+const middleAds = adData
+  .filter(ad => ad.position === 'middle')
+  .map(ad => ad.script); // nguyên gốc, không tách
+
+const bottomAds = adData
+  .filter(ad => ad.position === 'bottom')
+  .map(ad => ad.script); // nguyên gốc, không tách
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -59,16 +86,35 @@ const {
         })}
       </script>
     )}
-    <HeadAds position="top" />
-  </head>
 
+    <!-- Chèn <script> quảng cáo top vào <head> -->
+    {topAds.map(({ headScripts }) =>
+      headScripts.map(script => <Fragment set:html={script} />)
+    )}
+  </head>
   <body>
     <Navbar />
+
+    <!-- Quảng cáo Top: phần DOM hiển thị -->
+    {topAds.map(({ bodyHtml }) => (
+      <div class="ad-top" set:html={bodyHtml} />
+    ))}
+
     <main>
       <slot />
+
+      <!-- Quảng cáo giữa bài (middle): nguyên đoạn -->
+      {middleAds.map((html, i) => (
+        <div class="ad-middle my-4" set:html={html} key={i} />
+      ))}
     </main>
+
+    <!-- Quảng cáo cuối trang (bottom): nguyên đoạn -->
+    {bottomAds.map((html, i) => (
+      <div class="ad-bottom mt-4" set:html={html} key={i} />
+      ))}
+
     <Footer />
     <script type="module" src="/scripts/menu.js"></script>
-    <ScriptAds />
   </body>
 </html>
