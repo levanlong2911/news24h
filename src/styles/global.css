@@ -573,5 +573,13 @@ table & laptop
     padding-bottom: 10px;
   }
 
+  .full-width-ad {
+    grid-column: 1 / -1; /* Bắt quảng cáo chiếm hết các cột */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+
 }
 

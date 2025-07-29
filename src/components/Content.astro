@@ -1,31 +1,28 @@
 ---
-// Props: nhận `posts` từ ngoài truyền vào
+import PositionAd from '../components/PositionAd.astro';
 const { posts } = Astro.props;
 ---
-
 <section id="content">
   {
     posts.length > 0 ? (
-      posts.map((post) => (
-        <div class="grid-content">
-          <div class="post-img">
-            <a href={`/post/${post.slug}`}>
-              <img
-                src={
-                  post.thumbnail || "https://docs.astro.build/assets/rose.webp"
-                }
-                alt={post.title}
-              />
-            </a>
-          </div>
-          <div class="posts-title">
-            <div class="content-title">
+      posts.map((post, index) => (
+        <>
+          <div class="grid-content">
+            <div class="post-img">
               <a href={`/post/${post.slug}`}>
-                <h3 class="text-black font-bold">{post.title}</h3>
+                <img
+                  src={post.thumbnail || "https://docs.astro.build/assets/rose.webp"}
+                  alt={post.title}
+                />
               </a>
             </div>
-            <div class="content-date">
-              <span>
+            <div class="posts-title">
+              <div class="content-title">
+                <a href={`/post/${post.slug}`}>
+                  <h3 class="text-black font-bold">{post.title}</h3>
+                </a>
+              </div>
+              <div class="content-date">
                 <span>
                   {post.admin?.name},{" "}
                   {new Date(post.updated_at).toLocaleDateString("en-US", {
@@ -35,19 +32,27 @@ const { posts } = Astro.props;
                   })},{" "}
                   {post.category?.name}
                 </span>
-              </span>
-            </div>
-            <div class="content-description">
-              <p>
-                {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) +
-                "..."}
-            </p>
+              </div>
+              <div class="content-description">
+                <p>
+                  {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) + "..."}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+
+          {/* ✅ Chèn quảng cáo sau mỗi 2 bài viết */}
+          {(index + 1) % 2 === 0 && (
+            <div class="grid-content in-post-ad full-width-ad">
+              <PositionAd position="in-post" />
+            </div>
+          )}
+        </>
       ))
     ) : (
       <p>No posts available.</p>
     )
   }
 </section>
+    <PositionAd position="bottom"/>
+

@@ -1,0 +1,47 @@
+---
+//Position.astro
+import { extractScripts } from '../utils/ads.utils';
+const { position } = Astro.props;
+
+let ads: any[] = [];
+
+try {
+  const res = await fetch(`https://admin.lifennew.com/api/ads?position=${position}`);
+  if (res.ok) {
+    const json = await res.json();
+    ads = json.data;
+  }
+} catch (err) {
+  console.error(`Failed to fetch ads at position "${position}":`, err);
+}
+
+const safeAds = ads.map((ad) => extractScripts(ad.script));
+---
+
+{safeAds.map(({ bodyHtml }, index) => (
+  <div class="ad-slot" data-ad-id={index} data-ad-script={encodeURIComponent(bodyHtml)}></div>
+))}
+
+<script is:client="load">
+  document.querySelectorAll('.ad-slot[data-ad-script]').forEach((container) => {
+    const raw = decodeURIComponent(container.getAttribute('data-ad-script') || '');
+    if (!raw.trim()) return;
+
+    // Clean container before inserting
+    container.innerHTML = '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = raw;
+
+    [...temp.childNodes].forEach((node) => {
+      if (node.nodeName === 'SCRIPT') {
+        const script = document.createElement('script');
+        [...node.attributes].forEach(attr => script.setAttribute(attr.name, attr.value));
+        script.textContent = node.textContent;
+        container.appendChild(script);
+      } else {
+        container.appendChild(node.cloneNode(true));
+      }
+    });
+  });
+</script>

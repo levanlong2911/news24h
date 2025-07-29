@@ -1,8 +1,25 @@
 ---
+import { splitParagraphsWithAds } from '../utils/html.utils.ts';
+import { extractScripts } from '../utils/ads.utils.ts';
+import PositionAd from '../components/PositionAd.astro';
 import type { Post } from '../types.ts';
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
 
+// Fetch ads
+let adsHtml: string[] = [];
+try {
+  const res = await fetch(`https://admin.lifennew.com/api/ads?position=in-post`);
+  if (res.ok) {
+    const json = await res.json();
+    adsHtml = json.data.map(ad => extractScripts(ad.script).bodyHtml);
+  }
+} catch (err) {
+  console.error('Failed to fetch in-post ads:', err);
+}
+
+// Split paragraphs and insert ads
+const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
 ---
 
 <section id="content">
@@ -23,9 +40,18 @@ const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props
   </div>
 
   <div class="detail-content">
-    <article class="post-body" set:html={post.content} />
-
+    <article class="post-body">
+      {
+        contentParts.map((item, index) =>
+          item.type === 'p'
+            ? <div class="paragraph" set:html={item.content} />
+            : <div class="ad-slot" set:html={item.content} />
+        )
+      }
+    </article>
   </div>
+
+  <PositionAd position="bottom" />
 </section>
 
 <section class="related-posts">

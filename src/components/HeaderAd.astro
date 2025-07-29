@@ -1,0 +1,13 @@
+---
+import { extractScripts } from '../utils/ads.utils';
+const { ads = [] } = Astro.props;
+
+const headScripts = ads.flatMap(ad => extractScripts(ad.script).headScripts);
+---
+
+<!-- Debug -->
+<!-- {headScripts.length === 0 && <meta name="debug-headerad" content="No scripts found" />}
+{headScripts.length > 0 && <meta name="debug-headerad" content={`Scripts found: ${headScripts.length}`} />} -->
+
+<!-- Render actual scripts -->
+{headScripts.map(script => <Fragment set:html={script} />)}
