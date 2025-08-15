@@ -1,4 +1,4 @@
----
+<!-- ---
 import { splitParagraphsWithAds } from '../utils/html.utils.ts';
 import { extractScripts } from '../utils/ads.utils.ts';
 import PositionAd from '../components/PositionAd.astro';
@@ -45,7 +45,8 @@ const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
         contentParts.map((item, index) =>
           item.type === 'p'
             ? <div class="paragraph" set:html={item.content} />
-            : <div class="ad-slot" set:html={item.content} />
+            // : <div class="ad-slot" set:html={item.content} />
+            : <div class="ad-slot" data-ad-id={index} data-ad-script={encodeURIComponent(item.content)}></div>
         )
       }
     </article>
@@ -73,3 +74,124 @@ const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
     ))}
   </div>
 </section>
+
+<script is:client="load">
+  document.querySelectorAll('.ad-slot[data-ad-script]').forEach((container) => {
+    const raw = decodeURIComponent(container.getAttribute('data-ad-script') || '');
+    if (!raw.trim()) return;
+
+    // Dọn dẹp container trước khi render quảng cáo
+    container.innerHTML = '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = raw;
+
+    [...temp.childNodes].forEach((node) => {
+      if (node.nodeName === 'SCRIPT') {
+        const script = document.createElement('script');
+        [...node.attributes].forEach(attr => script.setAttribute(attr.name, attr.value));
+        script.textContent = node.textContent;
+        container.appendChild(script);
+      } else {
+        container.appendChild(node.cloneNode(true));
+      }
+    });
+  });
+</script> -->
+---
+import { splitParagraphsWithAds } from '../utils/html.utils.ts';
+import { extractScripts } from '../utils/ads.utils.ts';
+import PositionAd from '../components/PositionAd.astro';
+import type { Post } from '../types.ts';
+
+const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } = Astro.props;
+
+let adsHtml: string[] = [];
+try {
+  const res = await fetch(`https://admin.lifennew.com/api/ads?position=in-post`);
+  if (res.ok) {
+    const json = await res.json();
+    adsHtml = json.data.map(ad => extractScripts(ad.script).bodyHtml);
+  }
+} catch (err) {
+  console.error('Failed to fetch in-post ads:', err);
+}
+
+const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
+---
+
+<section id="content">
+  <div class="detail-title">
+    <h1>{post.title}</h1>
+  </div>
+
+  <div class="detail-infor">
+    <p>
+      {post.admin?.name} |
+      {new Date(post.updated_at).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })} |
+      {post.category?.name}
+    </p>
+  </div>
+
+  <div class="detail-content">
+    <article class="post-body">
+      {
+        contentParts.map((item, index) =>
+          item.type === 'p'
+            ? <div class="paragraph" set:html={item.content} />
+            : <div class="ad-slot" data-ad-id={index} data-ad-script={encodeURIComponent(item.content)}></div>
+        )
+      }
+    </article>
+  </div>
+
+  <PositionAd position="bottom" />
+</section>
+
+<section class="related-posts">
+  <div class="section-title">
+    <h2>Related Posts</h2>
+  </div>
+  <div class="related-grid">
+    {relatedPosts.slice(0, 6).map((item) => (
+      <div class="related-item" key={item.id}>
+        <a href={`/post/${item.slug}`}>
+          <img
+            src={item.thumbnail || "https://lifennew.com/default.jpg"}
+            alt={item.title}
+            class="related-img"
+          />
+          <h3 class="related-title">{item.title}</h3>
+        </a>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script is:client="load">
+  document.querySelectorAll('.ad-slot[data-ad-script]').forEach((container) => {
+    const raw = decodeURIComponent(container.getAttribute('data-ad-script') || '');
+    if (!raw.trim()) return;
+
+    container.innerHTML = '';
+
+    const temp = document.createElement('div');
+    temp.innerHTML = raw;
+
+    [...temp.childNodes].forEach((node) => {
+      if (node.nodeName === 'SCRIPT') {
+        const script = document.createElement('script');
+        [...node.attributes].forEach(attr => script.setAttribute(attr.name, attr.value));
+        script.textContent = node.textContent;
+        container.appendChild(script);
+      } else {
+        container.appendChild(node.cloneNode(true));
+      }
+    });
+  });
+</script>
+

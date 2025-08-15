@@ -10,8 +10,8 @@ import PositionAd from '../components/PositionAd.astro';
 const {
   pageTitle = 'News hot 24h',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = 'https://admin.lifennew.com/default.jpg',
-  pageUrl = 'https://admin.lifennew.com',
+  pageImage = 'https://lifennew.com/default.jpg',
+  pageUrl = 'https://lifennew.com',
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
@@ -92,11 +92,8 @@ try {
     <HeaderAd ads={headerAds} />
   </head>
   <body>
-    
     <Navbar />
 	  <PositionAd position="top"/>
-
-
     <main>
       <slot />
     </main>
