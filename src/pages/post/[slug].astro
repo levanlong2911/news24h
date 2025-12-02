@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Detail from '../../components/Detail.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import type { Post } from '../../types';
+
 export async function getStaticPaths() {
   const res = await fetch('https://admin.lifennew.com/api/posts');
   if (!res.ok) {
@@ -28,7 +29,10 @@ if (!listRes.ok) {
   throw new Error(`Failed to fetch posts list: ${listRes.status}`);
 }
 
-const post: Post = await postRes.json();
+const postJson = await postRes.json();
+
+const post: Post = postJson.post;
+const relatedPosts: Post[] = postJson.related_posts || [];
 const postListJson = await listRes.json();
 const posts : Post[] = Array.isArray(postListJson.data) ? postListJson.data : [];
 
@@ -36,9 +40,6 @@ const siteUrl = 'https://lifennew.com';
 const postUrl = `${siteUrl}/post/${post.slug}`;
 const postImage = post.thumbnail || 'https://lifennew.com/default.jpg';
 const postDescription = post.description || post.title;
-const relatedPosts = posts.filter(
-  (p) => p.category?.id === post.category?.id && p.id !== post.id
-);
 
 
 // const post: Post = await postRes.json();
