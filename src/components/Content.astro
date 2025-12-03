@@ -1,7 +1,8 @@
 ---
-// import PositionAd from '../components/PositionAd.astro';
+import PositionAd from "../components/PositionAd.astro";
 const { posts } = Astro.props;
 ---
+
 <section id="content">
   {
     posts.length > 0 ? (
@@ -11,7 +12,10 @@ const { posts } = Astro.props;
             <div class="post-img">
               <a href={`/post/${post.slug}`}>
                 <img
-                  src={post.thumbnail || "https://docs.astro.build/assets/rose.webp"}
+                  src={
+                    post.thumbnail ||
+                    "https://docs.astro.build/assets/rose.webp"
+                  }
                   alt={post.title}
                 />
               </a>
@@ -29,24 +33,25 @@ const { posts } = Astro.props;
                     day: "numeric",
                     month: "long",
                     year: "numeric",
-                  })},{" "}
-                  {post.category?.name}
+                  })}
+                  , {post.category?.name}
                 </span>
               </div>
               <div class="content-description">
                 <p>
-                  {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) + "..."}
+                  {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) +
+                    "..."}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Chèn quảng cáo sau mỗi 2 bài viết */}
-          {/* {(index + 1) % 2 === 0 && (
+          {(index + 1) % 2 === 0 && (
             <div class="grid-content in-post-ad full-width-ad">
               <PositionAd position="in-post" />
             </div>
-          )} */}
+          )}
         </>
       ))
     ) : (
@@ -54,5 +59,3 @@ const { posts } = Astro.props;
     )
   }
 </section>
-    <!-- <PositionAd position="bottom"/> -->
-

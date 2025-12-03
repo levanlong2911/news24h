@@ -4,7 +4,8 @@ import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 import HeaderAd from '../components/HeaderAd.astro';
-// import PositionAd from '../components/PositionAd.astro';
+import PositionAd from '../components/PositionAd.astro';
+
 
 
 const {
@@ -29,24 +30,6 @@ try {
   console.error('Header ads fetch failed:', err);
 }
 
-// function extractScripts(adScript: string) {
-//   const scriptRegex = /<script[^>]*src=["']([^"']+)["'][^>]*><\/script>/gi;
-//   const headScripts = [...adScript.matchAll(scriptRegex)].map(m => m[0]);
-//   const bodyHtml = adScript.replace(scriptRegex, '');
-//   return { headScripts, bodyHtml };
-// }
-
-// const topAds = adData
-//   .filter(ad => ad.position === 'top')
-//   .map(ad => extractScripts(ad.script));
-
-// const middleAds = adData
-//   .filter(ad => ad.position === 'middle')
-//   .map(ad => ad.script);
-
-// const bottomAds = adData
-//   .filter(ad => ad.position === 'bottom')
-//   .map(ad => ad.script);
 ---
 
 <!DOCTYPE html>
@@ -93,7 +76,7 @@ try {
   </head>
   <body>
     <Navbar />
-	  <!-- <PositionAd position="top"/> -->
+    <PositionAd position="top"/>
     <main>
       <slot />
     </main>
