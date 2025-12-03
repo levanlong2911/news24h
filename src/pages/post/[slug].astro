@@ -22,6 +22,10 @@ const [postRes, listRes] = await Promise.all([
   fetch('https://admin.lifennew.com/api/posts')
 ]);
 
+if (postRes.status === 404) {
+  return Astro.redirect('/404');
+}
+
 if (!postRes.ok) {
   throw new Error(`Failed to fetch post: ${postRes.status}`);
 }
