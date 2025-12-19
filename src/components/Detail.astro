@@ -11,7 +11,7 @@ const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
 let adsHtml: string[] = [];
 try {
   const res = await fetch(
-    `https://admin.lifennew.com/api/ads?position=in-post`
+    `https://admin.caranddriverenthusiast.com/api/ads?position=in-post`
   );
   if (res.ok) {
     const json = await res.json();
