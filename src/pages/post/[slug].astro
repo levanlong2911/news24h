@@ -40,9 +40,9 @@ const relatedPosts: Post[] = postJson.related_posts || [];
 const postListJson = await listRes.json();
 const posts : Post[] = Array.isArray(postListJson.data) ? postListJson.data : [];
 
-const siteUrl = 'https://lifennew.com';
+const siteUrl = 'https://caranddriverenthusiast.com';
 const postUrl = `${siteUrl}/post/${post.slug}`;
-const postImage = post.thumbnail || 'https://lifennew.com/default.jpg';
+const postImage = post.thumbnail || 'https://caranddriverenthusiast.com/default.jpg';
 const postDescription = post.description || post.title;
 
 
@@ -52,8 +52,8 @@ const postDescription = post.description || post.title;
 <BaseLayout
   pageTitle={post.title}
   pageDescription={post.description || post.title || 'Default Description'}
-  pageImage={post.thumbnail || 'https://lifennew.com/default.jpg'}
-  pageUrl={`https://lifennew.com/post/${post.slug}`}
+  pageImage={post.thumbnail || 'https://caranddriverenthusiast.com/default.jpg'}
+  pageUrl={`https://caranddriverenthusiast.com/post/${post.slug}`}
   isArticle={true}
   publishedAt={post.created_at || ''}
   updatedAt={post.updated_at || post.created_at || ''}
