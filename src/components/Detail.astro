@@ -2,6 +2,7 @@
 import { splitParagraphsWithAds } from "../utils/html.utils.ts";
 import { extractScripts } from "../utils/ads.utils.ts";
 import PositionAd from "../components/PositionAd.astro";
+import TableWrapper from "../components/TableWrapper.astro";
 import type { Post } from "../types.ts";
 
 const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
@@ -48,8 +49,8 @@ const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
     <article class="post-body">
       {
         contentParts.map((item, index) =>
-          item.type === "p" ? (
-            <div class="paragraph" set:html={item.content} />
+          item.type === "html" ? (
+            <TableWrapper key={index} htmlContent={item.content} />
           ) : (
             <div
               class="ad-slot"

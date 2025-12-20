@@ -367,10 +367,70 @@ footer ul li a:hover {
   line-height: 1.4;
 }
 
+/* Wrapper responsive cho table */
+.table-wrapper {
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  margin: 0.01rem 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Table chuẩn */
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* auto co giãn theo nội dung */
+}
+
+/* Cell styling */
+.table-wrapper th,
+.table-wrapper td {
+  border: 1px solid #d1d5db; /* Tailwind gray-300 */
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+}
+
+/* Header nổi bật */
+.table-wrapper th {
+  background-color: #f3f4f6; /* Tailwind gray-100 */
+  font-weight: 600;
+}
+
+/* Zebra striping */
+.table-wrapper tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+.table-wrapper tbody tr:nth-child(even) {
+  background-color: #f9fafb; /* Tailwind gray-50 */
+}
+
+/* Hover row */
+.table-wrapper tr:hover {
+  background-color: #f1f5f9; /* Tailwind gray-100 */
+}
+
+/* Responsive text wrap cho mobile */
+@media (max-width: 640px) {
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.5rem;
+    font-size: 0.875rem; /* Tailwind text-sm */
+  }
+}
+
+
 /* Responsive tốt cho khối nội dung */
 @media (min-width: 768px) {
   .post-body {
     font-size: 1.1rem;
+  }
+
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.5rem;
+    font-size: 0.875rem; /* Tailwind text-sm */
   }
 
 }
@@ -380,11 +440,11 @@ footer ul li a:hover {
 small table styles
 */
 @media screen and (min-width: 620px) {
-  /* body {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  } */
+  .table-wrapper th,
+  .table-wrapper td {
+    padding: 0.5rem;
+    font-size: 0.875rem; /* Tailwind text-sm */
+  }
 }
 
 /*
