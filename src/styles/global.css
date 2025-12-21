@@ -412,13 +412,13 @@ footer ul li a:hover {
 }
 
 /* Responsive text wrap cho mobile */
-@media (max-width: 640px) {
+/* @media (max-width: 640px) {
   .table-wrapper th,
   .table-wrapper td {
     padding: 0.5rem;
-    font-size: 0.875rem; /* Tailwind text-sm */
+    font-size: 0.875rem;
   }
-}
+} */
 
 
 /* Responsive tốt cho khối nội dung */

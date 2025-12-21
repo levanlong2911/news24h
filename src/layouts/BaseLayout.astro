@@ -11,8 +11,8 @@ import PositionAd from '../components/PositionAd.astro';
 const {
   pageTitle = 'News hot 24h',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = 'https://caranddriverenthusiast.com/default.jpg',
-  pageUrl = 'https://caranddriverenthusiast.com',
+  pageImage = 'https://lifennew.com/default.jpg',
+  pageUrl = 'https://lifennew.com',
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
@@ -21,7 +21,7 @@ const {
 
 let headerAds: any[] = [];
 try {
-  const res = await fetch('https://admin.caranddriverenthusiast.com/api/ads?position=header');
+  const res = await fetch('https://admin.lifennew.com/api/ads?position=header');
   if (res.ok) {
     const json = await res.json();
     headerAds = json.data;

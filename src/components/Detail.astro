@@ -12,7 +12,7 @@ const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
 let adsHtml: string[] = [];
 try {
   const res = await fetch(
-    `https://admin.caranddriverenthusiast.com/api/ads?position=in-post`
+    `https://admin.lifennew.com/api/ads?position=in-post`
   );
   if (res.ok) {
     const json = await res.json();
@@ -75,7 +75,7 @@ const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
         <div class="related-item" key={item.id}>
           <a href={`/post/${item.slug}`}>
             <img
-              src={item.thumbnail || "https://caranddriverenthusiast.com/default.jpg"}
+              src={item.thumbnail || "https://lifennew.com/default.jpg"}
               alt={item.title}
               class="related-img"
             />

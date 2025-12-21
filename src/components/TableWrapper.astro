@@ -7,28 +7,3 @@ const { htmlContent } = Astro.props;
 
 <div class="table-wrapper" set:html={htmlContent} />
 
-
-
-<!-- ---
-const { htmlContent, id } = Astro.props;
-const wrapperId = id || `tableContent-${Math.random().toString(36).substr(2, 9)}`;
----
-
-<div class="post-content" id={wrapperId} innerHTML={htmlContent}></div>
-
-<script is:inline>
-  (function() {
-    const postContent = document.getElementById("{wrapperId}");
-    if (!postContent) return;
-
-    const tables = postContent.querySelectorAll('table');
-    tables.forEach(table => {
-      if (!table.parentElement.classList.contains('table-wrapper')) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'table-wrapper';
-        table.parentNode.insertBefore(wrapper, table);
-        wrapper.appendChild(table);
-      }
-    });
-  })();
-</script> -->

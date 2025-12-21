@@ -6,7 +6,7 @@ import compression from 'vite-plugin-compression';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://caranddriverenthusiast.com',
+  site: 'https://lifennew.com',
   output: 'server',
   adapter: node({
     mode: 'standalone'
