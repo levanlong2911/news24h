@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "About – LifenNew";
+const description = "Learn more about LifenNew — a fast and reliable news platform providing engaging stories every day.";
+const url = "http://localhost:3000/about";
+const image = "https://lifennew.com/default.jpg";
+
+const content = `
+  <h1>About LifenNew</h1>
+  <p>Welcome to LifenNew, a modern online news platform delivering fast, engaging, and diverse content across entertainment, sports, NFL, technology, lifestyle, luxury vehicles, and trending U.S. news.</p>
+  <p>Our mission is to provide clear, trustworthy, and easy-to-read articles that keep readers informed and entertained.</p>
+  <p>Every piece of content is carefully curated to ensure accuracy, relevance, and value. We aim to build a positive, trustworthy digital reading experience for everyone.</p>
+  <p>Thank you for visiting LifenNew — enjoy exploring our content!</p>
+`;
+---
+
+<BaseLayout title={title}>
+
+  <head>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={image} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+  </head>
+
+  <section id="content">
+    <article class="post-body" set:html={content}></article>
+  </section>
+
+</BaseLayout>

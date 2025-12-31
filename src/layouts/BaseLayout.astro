@@ -5,30 +5,32 @@ import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 import HeaderAd from '../components/HeaderAd.astro';
 import PositionAd from '../components/PositionAd.astro';
-
+import { useAdsPromax } from '../lib/useAdsPromax';
 
 
 const {
-  pageTitle = 'News hot 24h',
+  pageTitle = 'News Day',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = 'https://lifennew.com/default.jpg',
-  pageUrl = 'https://lifennew.com',
+  pageImage = 'https://newsday.feji.io//default.jpg',
+  pageUrl = 'https://newsday.feji.io/',
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
-  authorName = 'News hot 24h',
+  authorName = 'News Day',
 } = Astro.props;
 
-let headerAds: any[] = [];
-try {
-  const res = await fetch('https://admin.lifennew.com/api/ads?position=header');
-  if (res.ok) {
-    const json = await res.json();
-    headerAds = json.data;
-  }
-} catch (err) {
-  console.error('Header ads fetch failed:', err);
-}
+// let headerAds: any[] = [];
+// try {
+//   const res = await fetch('https://admin.lifennew.com/api/ads?position=header');
+//   if (res.ok) {
+//     const json = await res.json();
+//     headerAds = json.data;
+//   }
+// } catch (err) {
+//   console.error('Header ads fetch failed:', err);
+// }
+// 🔥 PROMAX ADS (1 request)
+const ads = await useAdsPromax(Astro);
 
 ---
 
@@ -72,11 +74,13 @@ try {
         })}
       </script>
     )}
-    <HeaderAd ads={headerAds} />
+    <!-- HEADER ADS -->
+    <HeaderAd ads={ads} />
   </head>
   <body>
     <Navbar />
-    <PositionAd position="top"/>
+    <!-- TOP ADS -->
+    <PositionAd position="top" ads={ads} />
     <main>
       <slot />
     </main>

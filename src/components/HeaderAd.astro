@@ -1,9 +1,12 @@
 ---
-import { extractScripts } from '../utils/ads.utils';
-const { ads = [] } = Astro.props;
-
-const headScripts = ads.flatMap(ad => extractScripts(ad.script).headScripts);
+// import { extractScripts } from '../utils/ads.utils';
+const { ads = {} } = Astro.props;
+const items = ads.header || [];
 ---
 
-<!-- Render actual scripts -->
-{headScripts.map(script => <Fragment set:html={script} />)}
+{items.map((ad) => (
+  <div
+    class="ad-slot"
+    data-ad-script={encodeURIComponent(ad.script)}
+  />
+))}

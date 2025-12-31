@@ -1,61 +1,81 @@
 ---
 import PositionAd from "../components/PositionAd.astro";
-const { posts } = Astro.props;
+import type { Post } from "../types.ts";
+
+const { posts }: { posts?: Post[] } = Astro.props;
+
+const safePosts: Post[] = Array.isArray(posts) ? posts : [];
 ---
 
 <section id="content">
   {
-    posts.length > 0 ? (
-      posts.map((post, index) => (
+    safePosts.length === 0 && (
+      <p>No posts available.</p>
+    )
+  }
+
+  {
+    safePosts.map((post: Post, index: number) => {
+      const slug = post.slug ?? "";
+      if (!slug) return null;
+
+      const title = post.title ?? "Untitled";
+      const thumbnail =
+        post.thumbnail || "https://newsday.feji.io//default.jpg";
+
+      const description =
+        post.content
+          ?.replace(/<\/?[^>]+(>|$)/g, "")
+          ?.slice(0, 150) + "...";
+
+      return (
         <>
           <div class="grid-content">
             <div class="post-img">
-              <a href={`/post/${post.slug}`}>
+              <a href={`/post/${slug}`} title={title}>
                 <img
-                  src={
-                    post.thumbnail ||
-                    "https://docs.astro.build/assets/rose.webp"
-                  }
-                  alt={post.title}
+                  src={thumbnail}
+                  alt={title}
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
             </div>
+
             <div class="posts-title">
               <div class="content-title">
-                <a href={`/post/${post.slug}`}>
-                  <h3 class="text-black font-bold">{post.title}</h3>
+                <a href={`/post/${slug}`} title={title}>
+                  <h3 class="text-black font-bold">{title}</h3>
                 </a>
               </div>
+
               <div class="content-date">
                 <span>
-                  {post.admin?.name},{" "}
-                  {new Date(post.updated_at).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                  , {post.category?.name}
+                  {post.admin?.name || "Admin"},{" "}
+                  {post.updated_at
+                    ? new Date(post.updated_at).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : ""}
+                  {post.category?.name ? `, ${post.category.name}` : ""}
                 </span>
               </div>
+
               <div class="content-description">
-                <p>
-                  {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) +
-                    "..."}
-                </p>
+                <p>{description}</p>
               </div>
             </div>
           </div>
 
-          {/* Chèn quảng cáo sau mỗi 2 bài viết */}
           {(index + 1) % 2 === 0 && (
             <div class="grid-content in-post-ad full-width-ad">
               <PositionAd position="in-post" />
             </div>
           )}
         </>
-      ))
-    ) : (
-      <p>No posts available.</p>
-    )
+      );
+    })
   }
 </section>

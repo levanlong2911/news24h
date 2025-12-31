@@ -1,4 +1,17 @@
 ---
+const { position, ads = {} } = Astro.props;
+const items = ads[position] || [];
+---
+{items.map((ad) => (
+  <div
+    class="ad-slot"
+    data-ad-script={encodeURIComponent(ad.script)}
+  />
+))}
+
+
+
+<!-- ---
 //Position.astro
 import { extractScripts } from '../utils/ads.utils';
 const { position } = Astro.props;
@@ -44,4 +57,4 @@ const safeAds = ads.map((ad) => extractScripts(ad.script));
       }
     });
   });
-</script>
+</script> -->

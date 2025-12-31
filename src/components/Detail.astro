@@ -4,26 +4,48 @@ import { extractScripts } from "../utils/ads.utils.ts";
 import PositionAd from "../components/PositionAd.astro";
 import TableWrapper from "../components/TableWrapper.astro";
 import type { Post } from "../types.ts";
+import { useAds } from "../lib/useAds";
 
-const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
-  Astro.props;
+// const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
+//   Astro.props;
 
-// Fetch ads
-let adsHtml: string[] = [];
-try {
-  const res = await fetch(
-    `https://admin.lifennew.com/api/ads?position=in-post`
-  );
-  if (res.ok) {
-    const json = await res.json();
-    adsHtml = json.data.map((ad) => extractScripts(ad.script).bodyHtml);
-  }
-} catch (err) {
-  console.error("Failed to fetch in-post ads:", err);
-}
+// // Fetch ads
+// let adsHtml: string[] = [];
+// try {
+//   const res = await fetch(
+//     `https://admin.lifennew.com/api/ads?position=in-post`
+//   );
+//   if (res.ok) {
+//     const json = await res.json();
+//     adsHtml = json.data.map((ad) => extractScripts(ad.script).bodyHtml);
+//   }
+// } catch (err) {
+//   console.error("Failed to fetch in-post ads:", err);
+// }
+// 🔥 1 request duy nhất
+// const ads = await useAds();
+
+// // In-post ads
+// const inPostAds = (ads["in-post"] || []).map(
+//   (ad) => extractScripts(ad.script).bodyHtml
+// );
+
 
 // Split paragraphs & insert ads every 3 <p>
-const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
+// const contentParts = splitParagraphsWithAds(post.content, inPostAds, 3);
+
+const { post, relatedPosts, ads } = Astro.props;
+
+// In-post ads
+const inPostAds = (ads?.["in-post"] || []).map(
+  (ad) => extractScripts(ad.script).bodyHtml
+);
+
+const contentParts = splitParagraphsWithAds(
+  post.content,
+  inPostAds,
+  3
+);
 ---
 
 <section id="content">
@@ -75,7 +97,11 @@ const contentParts = splitParagraphsWithAds(post.content, adsHtml, 3);
         <div class="related-item" key={item.id}>
           <a href={`/post/${item.slug}`}>
             <img
+<<<<<<< HEAD
               src={item.thumbnail || "https://lifennew.com/default.jpg"}
+=======
+              src={item.thumbnail || "https://newsday.feji.io//default.jpg"}
+>>>>>>> 5c42719 (update code domain)
               alt={item.title}
               class="related-img"
             />
