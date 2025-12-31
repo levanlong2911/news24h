@@ -48,11 +48,6 @@ import { useAdsPromax } from '../../lib/useAdsPromax';
 // const postDescription = post.description || post.title;
 const { slug } = Astro.params;
 
-<<<<<<< HEAD
-const [postRes, listRes] = await Promise.all([
-  fetch(`https://admin.lifennew.com/api/posts/${slug}`),
-  fetch('https://admin.lifennew.com/api/posts')
-=======
 const POST_API = `https://admin.lifennew.com/api/posts/${slug}`;
 const LIST_API = 'https://admin.lifennew.com/api/posts';
 
@@ -63,7 +58,6 @@ const emptyList: Post[] = [];
 const [postData, posts] = await Promise.all([
   apiFetch<any>(POST_API, {}, emptyPost),
   apiFetch<Post[]>(LIST_API, {}, emptyList),
->>>>>>> 5c42719 (update code domain)
 ]);
 
 // ❗ Nếu post null → SEO-safe redirect
@@ -71,29 +65,8 @@ if (!postData || !postData.post) {
   return new Response(null, { status: 404 });
 }
 
-<<<<<<< HEAD
-if (!postRes.ok) {
-  throw new Error(`Failed to fetch post: ${postRes.status}`);
-}
-if (!listRes.ok) {
-  throw new Error(`Failed to fetch posts list: ${listRes.status}`);
-}
-
-const postJson = await postRes.json();
-
-const post: Post = postJson.post;
-const relatedPosts: Post[] = postJson.related_posts || [];
-const postListJson = await listRes.json();
-const posts : Post[] = Array.isArray(postListJson.data) ? postListJson.data : [];
-
-const siteUrl = 'https://lifennew.com';
-const postUrl = `${siteUrl}/post/${post.slug}`;
-const postImage = post.thumbnail || 'https://lifennew.com/default.jpg';
-const postDescription = post.description || post.title;
-=======
 const post: Post = postData.post;
 const relatedPosts: Post[] = postData.related_posts || [];
->>>>>>> 5c42719 (update code domain)
 
 const siteUrl = 'https://newsday.feji.io/';
 
@@ -105,13 +78,8 @@ const ads = await useAdsPromax(Astro);
 <BaseLayout
   pageTitle={post.title}
   pageDescription={post.description || post.title || 'Default Description'}
-<<<<<<< HEAD
-  pageImage={post.thumbnail || 'https://lifennew.com/default.jpg'}
-  pageUrl={`https://lifennew.com/post/${post.slug}`}
-=======
   pageImage={post.thumbnail || 'https://newsday.feji.io//default.jpg'}
   pageUrl={`https://newsday.feji.io//post/${post.slug}`}
->>>>>>> 5c42719 (update code domain)
   isArticle={true}
   publishedAt={post.created_at || ''}
   updatedAt={post.updated_at || post.created_at || ''}
