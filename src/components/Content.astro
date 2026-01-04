@@ -13,7 +13,7 @@ const safePosts: Post[] = Array.isArray(posts) ? posts : [];
 const inPostAds = ads?.["in-post"] || [];
 
 // base url an toàn (không dùng WEB_BASE)
-const BASE_URL = import.meta.env.PUBLIC_WEB_BASE || "";
+const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
 ---
 
 <section id="content">
@@ -30,7 +30,7 @@ const BASE_URL = import.meta.env.PUBLIC_WEB_BASE || "";
 
       const title = post.title ?? "Untitled";
       const thumbnail =
-        post.thumbnail || "${WEB_BASE}/default.jpg";
+        post.thumbnail || "${BASE_URL}/default.jpg";
 
       const description =
         post.content

@@ -15,6 +15,10 @@ const [posts, ads] = await Promise.all([
   fetchAds(),
 ]);
 
+console.log('--- DEBUG index.astro ---');
+console.log('posts:', posts);
+console.log('ads:', ads);
+
 const pageTitle = 'Home';
 ---
 
