@@ -2,9 +2,18 @@
 import PositionAd from "../components/PositionAd.astro";
 import type { Post } from "../types.ts";
 
-const { posts }: { posts?: Post[] } = Astro.props;
+interface Props {
+  posts?: Post[];
+  ads?: Record<string, any[]>;
+}
+
+const { posts, ads }: Props = Astro.props;
 
 const safePosts: Post[] = Array.isArray(posts) ? posts : [];
+const inPostAds = ads?.["in-post"] || [];
+
+// base url an toàn (không dùng WEB_BASE)
+const BASE_URL = import.meta.env.PUBLIC_WEB_BASE || "";
 ---
 
 <section id="content">
@@ -21,7 +30,7 @@ const safePosts: Post[] = Array.isArray(posts) ? posts : [];
 
       const title = post.title ?? "Untitled";
       const thumbnail =
-        post.thumbnail || "https://newsday.feji.io//default.jpg";
+        post.thumbnail || "${WEB_BASE}/default.jpg";
 
       const description =
         post.content
@@ -69,9 +78,9 @@ const safePosts: Post[] = Array.isArray(posts) ? posts : [];
             </div>
           </div>
 
-          {(index + 1) % 2 === 0 && (
+          {(index + 1) % 2 === 0 && inPostAds.length  && (
             <div class="grid-content in-post-ad full-width-ad">
-              <PositionAd position="in-post" />
+              <PositionAd position="in-post" ads={ads} />
             </div>
           )}
         </>

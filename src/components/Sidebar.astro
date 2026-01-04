@@ -20,7 +20,7 @@ if (!Array.isArray(posts) || posts.length === 0) {
         const title = post.title ?? 'Untitled';
         const thumbnail =
           post.thumbnail ||
-          'https://newsday.feji.io//default.jpg';
+          '${WEB_BASE}/default.jpg';
 
         // ❗ Không có slug thì bỏ qua (tránh link lỗi / 302 / 404)
         if (!slug) return null;

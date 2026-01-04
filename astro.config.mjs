@@ -6,7 +6,7 @@ import compression from 'vite-plugin-compression';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://newsday.feji.io/',
+  site: import.meta.env.PUBLIC_API_WEB,
   output: 'server',
   adapter: node({
     mode: 'standalone'

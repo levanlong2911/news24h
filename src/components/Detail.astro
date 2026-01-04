@@ -1,47 +1,26 @@
 ---
 import { splitParagraphsWithAds } from "../utils/html.utils.ts";
 import { extractScripts } from "../utils/ads.utils.ts";
-import PositionAd from "../components/PositionAd.astro";
+import PositionAd from "./PositionAd.astro";
 import TableWrapper from "../components/TableWrapper.astro";
 import type { Post } from "../types.ts";
-import { useAds } from "../lib/useAds";
+import { fetchAds } from "../lib/api";
+import { injectInPostAds } from "../lib/injectInPostAds";
+import type { AdsMap } from "../types/ads"
 
-// const { post, relatedPosts }: { post: Post; relatedPosts: Post[] } =
-//   Astro.props;
+const { post, relatedPosts, ads } = Astro.props as {
+  post: Post;
+  relatedPosts: Post[];
+  ads: AdsMap;
+};
+const inPostAds = ads?.["in-post"] || [];
 
-// // Fetch ads
-// let adsHtml: string[] = [];
-// try {
-//   const res = await fetch(
-//     `https://admin.lifennew.com/api/ads?position=in-post`
-//   );
-//   if (res.ok) {
-//     const json = await res.json();
-//     adsHtml = json.data.map((ad) => extractScripts(ad.script).bodyHtml);
-//   }
-// } catch (err) {
-//   console.error("Failed to fetch in-post ads:", err);
-// }
-// 🔥 1 request duy nhất
-// const ads = await useAds();
+// 🤖 BOT → NO ADS (SEO CLEAN)
+const ua = Astro.request.headers.get("user-agent") || "";
+const isBot = /googlebot|bingbot|yandex|duckduckbot|baiduspider/i.test(ua);
 
-// // In-post ads
-// const inPostAds = (ads["in-post"] || []).map(
-//   (ad) => extractScripts(ad.script).bodyHtml
-// );
-
-
-// Split paragraphs & insert ads every 3 <p>
-// const contentParts = splitParagraphsWithAds(post.content, inPostAds, 3);
-
-const { post, relatedPosts, ads } = Astro.props;
-
-// In-post ads
-const inPostAds = (ads?.["in-post"] || []).map(
-  (ad) => extractScripts(ad.script).bodyHtml
-);
-
-const contentParts = splitParagraphsWithAds(
+// ULTRA PROMAX: inject in-post ads (USER ONLY)
+const contentParts = injectInPostAds(
   post.content,
   inPostAds,
   3
@@ -55,14 +34,12 @@ const contentParts = splitParagraphsWithAds(
 
   <div class="detail-infor">
     <p>
-      {post.admin?.name} |
-      {
-        new Date(post.updated_at).toLocaleDateString("en-US", {
+      {post.admin?.name || "Admin"} |
+      {new Date(post.updated_at).toLocaleDateString("en-US", {
           day: "numeric",
           month: "long",
           year: "numeric",
-        })
-      } |
+        })} |
       {post.category?.name}
     </p>
   </div>
@@ -84,7 +61,8 @@ const contentParts = splitParagraphsWithAds(
       }
     </article>
   </div>
-  <PositionAd position="bottom" />
+  <!-- bottom ads -->
+  <PositionAd position="bottom" ads={ads} />
 </section>
 
 <section class="related-posts">
@@ -97,11 +75,7 @@ const contentParts = splitParagraphsWithAds(
         <div class="related-item" key={item.id}>
           <a href={`/post/${item.slug}`}>
             <img
-<<<<<<< HEAD
-              src={item.thumbnail || "https://lifennew.com/default.jpg"}
-=======
-              src={item.thumbnail || "https://newsday.feji.io//default.jpg"}
->>>>>>> 5c42719 (update code domain)
+              src={item.thumbnail}
               alt={item.title}
               class="related-img"
             />
@@ -114,28 +88,13 @@ const contentParts = splitParagraphsWithAds(
 </section>
 
 <script is:client="load">
-  document.querySelectorAll(".ad-slot[data-ad-script]").forEach((container) => {
-    const raw = decodeURIComponent(
-      container.getAttribute("data-ad-script") || ""
-    );
-    if (!raw.trim()) return;
+  import { injectAdScript } from "../lib/injectAdScript";
 
-    container.innerHTML = "";
-
-    const temp = document.createElement("div");
-    temp.innerHTML = raw;
-
-    [...temp.childNodes].forEach((node) => {
-      if (node.nodeName === "SCRIPT") {
-        const script = document.createElement("script");
-        [...node.attributes].forEach((attr) =>
-          script.setAttribute(attr.name, attr.value)
-        );
-        script.textContent = node.textContent;
-        container.appendChild(script);
-      } else {
-        container.appendChild(node.cloneNode(true));
-      }
+  document
+    .querySelectorAll(".ad-slot[data-ad-script]")
+    .forEach((el) => {
+      const raw = decodeURIComponent(el.dataset.adScript || "");
+      el.innerHTML = "";
+      injectAdScript(el, raw);
     });
-  });
 </script>

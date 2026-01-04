@@ -419,7 +419,10 @@ footer ul li a:hover {
     font-size: 0.875rem;
   }
 } */
-
+.in-post-ad {
+  margin: 24px 0;
+  min-height: 250px;
+}
 
 /* Responsive tốt cho khối nội dung */
 @media (min-width: 768px) {

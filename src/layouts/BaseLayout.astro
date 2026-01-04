@@ -5,32 +5,19 @@ import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
 import HeaderAd from '../components/HeaderAd.astro';
 import PositionAd from '../components/PositionAd.astro';
-import { useAdsPromax } from '../lib/useAdsPromax';
 
-
+const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 const {
   pageTitle = 'News Day',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = 'https://newsday.feji.io//default.jpg',
-  pageUrl = 'https://newsday.feji.io/',
+  pageImage = '${WEB_BASE}/default.jpg',
+  pageUrl = '${WEB_BASE}',
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
   authorName = 'News Day',
 } = Astro.props;
 
-// let headerAds: any[] = [];
-// try {
-//   const res = await fetch('https://admin.lifennew.com/api/ads?position=header');
-//   if (res.ok) {
-//     const json = await res.json();
-//     headerAds = json.data;
-//   }
-// } catch (err) {
-//   console.error('Header ads fetch failed:', err);
-// }
-// 🔥 PROMAX ADS (1 request)
-const ads = await useAdsPromax(Astro);
 
 ---
 
@@ -75,12 +62,10 @@ const ads = await useAdsPromax(Astro);
       </script>
     )}
     <!-- HEADER ADS -->
-    <HeaderAd ads={ads} />
   </head>
   <body>
     <Navbar />
     <!-- TOP ADS -->
-    <PositionAd position="top" ads={ads} />
     <main>
       <slot />
     </main>

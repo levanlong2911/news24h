@@ -1,60 +1,36 @@
 ---
-const { position, ads = {} } = Astro.props;
-const items = ads[position] || [];
+import type { AdsMap } from "../types/ads";
+
+const { position, ads } = Astro.props as {
+  position: keyof AdsMap;
+  ads: AdsMap;
+};
+
+const items =
+  Array.isArray(ads?.[position])
+    ? ads[position].filter(
+        (a) =>
+          typeof a.script === "string" &&
+          a.script.includes("<script")
+      )
+    : [];
 ---
-{items.map((ad) => (
+
+{items.length > 0 && (
   <div
-    class="ad-slot"
-    data-ad-script={encodeURIComponent(ad.script)}
+    class={`ad ad-${position}`}
+    data-ad-script={encodeURIComponent(items[0].script)}
   />
-))}
-
-
-
-<!-- ---
-//Position.astro
-import { extractScripts } from '../utils/ads.utils';
-const { position } = Astro.props;
-
-let ads: any[] = [];
-
-try {
-  const res = await fetch(`https://admin.lifennew.com/api/ads?position=${position}`);
-  if (res.ok) {
-    const json = await res.json();
-    ads = json.data;
-  }
-} catch (err) {
-  console.error(`Failed to fetch ads at position "${position}":`, err);
-}
-
-const safeAds = ads.map((ad) => extractScripts(ad.script));
----
-
-{safeAds.map(({ bodyHtml }, index) => (
-  <div class="ad-slot" data-ad-id={index} data-ad-script={encodeURIComponent(bodyHtml)}></div>
-))}
+)}
 
 <script is:client="load">
-  document.querySelectorAll('.ad-slot[data-ad-script]').forEach((container) => {
-    const raw = decodeURIComponent(container.getAttribute('data-ad-script') || '');
-    if (!raw.trim()) return;
+  import { injectAdScript } from "../lib/injectAdScript";
 
-    // Clean container before inserting
-    container.innerHTML = '';
-
-    const temp = document.createElement('div');
-    temp.innerHTML = raw;
-
-    [...temp.childNodes].forEach((node) => {
-      if (node.nodeName === 'SCRIPT') {
-        const script = document.createElement('script');
-        [...node.attributes].forEach(attr => script.setAttribute(attr.name, attr.value));
-        script.textContent = node.textContent;
-        container.appendChild(script);
-      } else {
-        container.appendChild(node.cloneNode(true));
-      }
+  document
+    .querySelectorAll(".ad[data-ad-script]")
+    .forEach((el) => {
+      const raw = decodeURIComponent(el.dataset.adScript || "");
+      el.innerHTML = "";
+      injectAdScript(el, raw);
     });
-  });
-</script> -->
+</script>
