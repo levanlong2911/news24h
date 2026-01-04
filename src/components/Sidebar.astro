@@ -7,7 +7,6 @@ const { posts = [] }: { posts?: Post[] } = Astro.props;
 if (!Array.isArray(posts) || posts.length === 0) {
   return null;
 }
-const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
 ---
 
 <section id="silebar">
@@ -21,7 +20,7 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
         const title = post.title ?? 'Untitled';
         const thumbnail =
           post.thumbnail ||
-          '${BASE_URL}/default.jpg';
+          'default.jpg';
 
         // ❗ Không có slug thì bỏ qua (tránh link lỗi / 302 / 404)
         if (!slug) return null;
