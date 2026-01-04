@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Detail from '../../components/Detail.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import type { Post } from '../../types';
-import { fetchPostDetail, fetchPosts, fetchAds, webLink } from '../../lib/api';
+import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
 
 const { slug } = Astro.params;
 
@@ -33,7 +33,7 @@ const siteUrl = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 // Helpers SEO-safe
 const pageTitle = post.title;
 const pageDescription = post.description || post.title || 'Default Description';
-const pageImage = post.thumbnail || webLink('default.jpg');
+const pageImage = post.thumbnail || 'default.jpg';
 const pageUrl = `${siteUrl}/post/${post.slug}`;
 const publishedAt = post.created_at || '';
 const updatedAt = post.updated_at || post.created_at || '';
