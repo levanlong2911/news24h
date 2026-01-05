@@ -62,7 +62,7 @@ const contentParts = injectInPostAds(
     </article>
   </div>
   <!-- bottom ads -->
-  <PositionAd position="bottom" ads={ads} />
+  {ads.bottom?.length > 0 && <PositionAd position="bottom" ads={ads} />}
 </section>
 
 <section class="related-posts">
@@ -87,7 +87,7 @@ const contentParts = injectInPostAds(
   </div>
 </section>
 
-<script is:client="load">
+<script is:client>
   import { injectAdScript } from "../lib/injectAdScript";
 
   document

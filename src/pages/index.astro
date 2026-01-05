@@ -2,29 +2,25 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Content from '../components/Content.astro';
 import Sidebar from '../components/Sidebar.astro';
-import { fetchPosts, fetchAds } from '../lib/api';
+import { fetchPosts } from '../lib/api';
 import type { Post } from '../types';
+import { getAllAds } from '../lib/adsCache';
 
 // Fallback
 const emptyList: Post[] = [];
-const emptyAds = {};
 
 // Fetch posts + ads
 const [posts, ads] = await Promise.all([
   fetchPosts(),
-  fetchAds(),
+  getAllAds(),
 ]);
-
-console.log('--- DEBUG index.astro ---');
-console.log('posts:', posts);
-console.log('ads:', ads);
 
 const pageTitle = 'Home';
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} ads={ads}>
 	<div class="grid-container">
-		<Content posts={posts} ads={ads} />
+		<Content posts={posts} />
 		<Sidebar posts={posts} />
 	</div>
 </BaseLayout>

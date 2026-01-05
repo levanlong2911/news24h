@@ -78,10 +78,8 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
             </div>
           </div>
 
-          {(index + 1) % 2 === 0 && inPostAds.length  && (
-            <div class="grid-content in-post-ad full-width-ad">
-              <PositionAd position="in-post" ads={ads} />
-            </div>
+          {(index + 1) % 2 === 0 && inPostAds?.length > 0 && (
+            <PositionAd position="in-post" ads={ads} />
           )}
         </>
       );

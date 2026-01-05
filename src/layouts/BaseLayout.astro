@@ -3,8 +3,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
-import HeaderAd from '../components/HeaderAd.astro';
+// import HeaderAd from '../components/HeaderAd.astro';
 import PositionAd from '../components/PositionAd.astro';
+import type { AdsMap } from '../types/ads';
 
 const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 const {
@@ -16,6 +17,7 @@ const {
   publishedAt = '',
   updatedAt = '',
   authorName = 'News Day',
+  ads = {} as AdsMap, // thêm prop ads
 } = Astro.props;
 
 
@@ -62,10 +64,13 @@ const {
       </script>
     )}
     <!-- HEADER ADS -->
+    {ads.header?.length > 0 && <PositionAd position="header" ads={ads} />}
+
   </head>
   <body>
     <Navbar />
     <!-- TOP ADS -->
+    {ads.top?.length > 0 && <PositionAd position="top" ads={ads} />}
     <main>
       <slot />
     </main>
