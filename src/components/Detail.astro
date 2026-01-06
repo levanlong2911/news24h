@@ -55,19 +55,6 @@ const contentHtml = isBot
   <!-- /video -->
   <div class="detail-content">
     <article class="post-body">
-      <!-- {
-        contentParts.map((item, index) =>
-          item.type === "html" ? (
-            <TableWrapper key={index} htmlContent={item.content} />
-          ) : (
-            <div
-              class="ad-slot"
-              data-ad-id={index}
-              data-ad-script={encodeURIComponent(item.content)}
-            />
-          )
-        )
-      } -->
       <TableWrapper htmlContent={contentHtml} />
     </article>
   </div>
