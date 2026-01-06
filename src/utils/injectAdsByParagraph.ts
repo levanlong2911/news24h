@@ -57,14 +57,14 @@ function insertAfter(target: Element, node: Element) {
 function getBanner(n: number, doc: Document) {
   const wrap = doc.createElement("div");
   wrap.className = "ads ads-banner";
-  wrap.innerHTML = `<div id="div_adsconex_banner_responsive_${n}"></div>`;
+  wrap.innerHTML = `<div id="div_adsconex_banner_responsive_${n}" class="ad-slot"></div>`;
   return wrap;
 }
 
 function getInpage(n: number, doc: Document) {
   const wrap = doc.createElement("div");
   wrap.innerHTML = `
-<div id="js_adsconex_parallax_${n}" data-type="parallax">
+<div id="js_adsconex_parallax_${n}" data-type="parallax" class="ad-slot">
   <div class="adsconex-parallax_wrapper">
     <div class="adsconex-parallax_ad-wrapper">
       <div class="adsconex-parallax_ad" align="center">
