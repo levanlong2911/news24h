@@ -2,9 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Content from '../components/Content.astro';
 import Sidebar from '../components/Sidebar.astro';
-import { fetchPosts } from '../lib/api';
+import { fetchPosts, fetchAds } from '../lib/api';
 import type { Post } from '../types';
-import { getAllAds } from '../lib/adsCache';
 
 // Fallback
 const emptyList: Post[] = [];
@@ -12,7 +11,7 @@ const emptyList: Post[] = [];
 // Fetch posts + ads
 const [posts, ads] = await Promise.all([
   fetchPosts(),
-  getAllAds(),
+  fetchAds(),
 ]);
 
 const pageTitle = 'Home';

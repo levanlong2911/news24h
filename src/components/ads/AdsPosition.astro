@@ -1,0 +1,38 @@
+---
+import type { AdItem, AdsPosition } from "../../types/ads";
+
+const { position, ads } = Astro.props as {
+  position: AdsPosition;
+  ads?: AdItem[];
+};
+
+const items = Array.isArray(ads)
+  ? ads.filter(a => a.script?.trim())
+  : [];
+---
+{items.length > 0 && (
+  <div class={`ad ad-${position}`}>
+    {items.map(item => (
+      <div
+        class="ad-slot"
+        data-ad-script={encodeURIComponent(item.script)}
+      ></div>
+    ))}
+  </div>
+)}
+
+<script is:client="load">
+  document
+    .querySelectorAll(".ad-slot[data-ad-script]")
+    .forEach(el => {
+      if (el.dataset.loaded) return;
+
+      const html = decodeURIComponent(el.dataset.adScript || "");
+      el.dataset.loaded = "1";
+      el.innerHTML = "";
+
+      const tmp = document.createElement("div");
+      tmp.innerHTML = html;
+      while (tmp.firstChild) el.appendChild(tmp.firstChild);
+    });
+</script>

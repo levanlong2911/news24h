@@ -1,0 +1,11 @@
+---
+const { ads } = Astro.props as {
+  ads: { script: string }[];
+};
+
+const html = ads?.map(a => a.script).join('\n') ?? '';
+---
+
+{html && (
+  <Fragment set:html={html} />
+)}

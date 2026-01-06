@@ -19,7 +19,7 @@ const [postData, posts, ads] = await Promise.all([
   fetchPosts(),
   fetchAds(),
 ]);
-
+console.log("ADS 123:", ads);
 // Nếu post null → trả 404 SEO-safe
 if (!postData || !postData.post) {
   return new Response(null, { status: 404 });
@@ -49,6 +49,7 @@ const authorName = post.admin?.name || 'Unknown Author';
   publishedAt={publishedAt}
   updatedAt={updatedAt}
   authorName={authorName}
+  ads={ads}
 >
   <div class="grid-container">
     <Detail post={post} relatedPosts={relatedPosts} ads={ads} />

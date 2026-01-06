@@ -87,14 +87,3 @@ const contentParts = injectInPostAds(
   </div>
 </section>
 
-<script is:client>
-  import { injectAdScript } from "../lib/injectAdScript";
-
-  document
-    .querySelectorAll(".ad-slot[data-ad-script]")
-    .forEach((el) => {
-      const raw = decodeURIComponent(el.dataset.adScript || "");
-      el.innerHTML = "";
-      injectAdScript(el, raw);
-    });
-</script>

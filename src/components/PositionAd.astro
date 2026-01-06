@@ -7,30 +7,31 @@ const { position, ads } = Astro.props as {
 };
 
 const items =
-  Array.isArray(ads?.[position])
+  Array.isArray(ads[position])
     ? ads[position].filter(
-        (a) =>
-          typeof a.script === "string" &&
-          a.script.includes("<script")
+        a => typeof a.script === "string" && a.script.trim().length > 0
       )
     : [];
 ---
 
 {items.length > 0 && (
-  <div
-    class={`ad ad-${position}`}
-    data-ad-script={encodeURIComponent(items[0].script)}
-  />
+  <div class={`ad ad-${position}`}>
+    {items.map(item => (
+      <div data-ad-script={encodeURIComponent(item.script)} />
+    ))}
+  </div>
 )}
 
 <script is:client="load">
-  import { injectAdScript } from "../lib/injectAdScript";
-
   document
-    .querySelectorAll(".ad[data-ad-script]")
-    .forEach((el) => {
+    .querySelectorAll(".ad [data-ad-script]")
+    .forEach(el => {
       const raw = decodeURIComponent(el.dataset.adScript || "");
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = raw;
       el.innerHTML = "";
-      injectAdScript(el, raw);
+      while (wrapper.firstChild) {
+        el.appendChild(wrapper.firstChild);
+      }
     });
 </script>
