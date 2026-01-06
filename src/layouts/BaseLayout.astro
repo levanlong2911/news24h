@@ -75,5 +75,11 @@ const {
 
     <Footer />
     <script type="module" src="/scripts/menu.js"></script>
+    <script is:inline client:idle>
+      if (typeof window !== "undefined") {
+        window.adsconex = window.adsconex || { cmd: [] };
+        adsconex.cmd.push(() => adsconex.run("feji_default"));
+      }
+    </script>
   </body>
 </html>
