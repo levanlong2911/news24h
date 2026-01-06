@@ -424,6 +424,12 @@ footer ul li a:hover {
   min-height: 250px;
 }
 
+#ad sconex-video-container,
+#ad sconex-video-container * {
+  box-sizing: border-box;
+}
+
+
 /* Responsive tốt cho khối nội dung */
 @media (min-width: 768px) {
   .post-body {
