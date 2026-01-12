@@ -7,10 +7,12 @@ const { position, ads } = Astro.props as {
 };
 
 const items = Array.isArray(ads)
-  ? ads.filter(a => a.script?.trim())
+  ? ads.filter(a => typeof a?.script === "string" && a.script.trim())
   : [];
+
+const hasAds = items.length > 0;
 ---
-{items.length > 0 && (
+{hasAds && (
   <div class={`ad ad-${position}`}>
     {items.map(item => (
       <div
@@ -20,19 +22,33 @@ const items = Array.isArray(ads)
     ))}
   </div>
 )}
+{hasAds && (
+  <script is:client="load">
+    document.querySelectorAll(".ad-slot[data-ad-script]").forEach(el => {
+      if (el.dataset.loaded === "1") return;
 
-<script is:client="load">
-  document
-    .querySelectorAll(".ad-slot[data-ad-script]")
-    .forEach(el => {
-      if (el.dataset.loaded) return;
+      const raw = el.dataset.adScript;
+      if (!raw) return;
 
-      const html = decodeURIComponent(el.dataset.adScript || "");
       el.dataset.loaded = "1";
-      el.innerHTML = "";
 
-      const tmp = document.createElement("div");
-      tmp.innerHTML = html;
-      while (tmp.firstChild) el.appendChild(tmp.firstChild);
+      try {
+        const html = decodeURIComponent(raw);
+        const tmp = document.createElement("div");
+        tmp.innerHTML = html;
+
+        // nếu script không sinh ra gì → ẩn luôn
+        el.innerHTML = "";
+        while (tmp.firstChild) el.appendChild(tmp.firstChild);
+
+        if (!el.firstChild) {
+          el.closest(".ad")?.remove();
+        }
+      } catch (e) {
+        el.closest(".ad")?.remove();
+      }
     });
-</script>
+  </script>
+)}
+
+

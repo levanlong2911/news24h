@@ -1,0 +1,64 @@
+---
+import { parseHTML } from "linkedom";
+import type { AdItem } from "../types/ads";
+
+import { applyAdsMiddle } from "./ads/adsMiddleEngine";
+import { applyAdsInPost } from "./ads/adsInPostEngine";
+
+const {
+  html,
+  middleAds = [],
+  inPostAds = []
+} = Astro.props as {
+  html: string;
+  middleAds: AdItem[];
+  inPostAds: AdItem[];
+};
+
+const { document } = parseHTML(`<body>${html}</body>`);
+
+/* =========================
+   SANITIZE – GLOBAL
+========================= */
+document.querySelectorAll(`
+  table .ad-in-post,
+  table .ad-middle,
+  table iframe,
+  table script,
+  table [id^="google_ads"],
+  table div[id^="div_adsconex"]
+`).forEach(el => el.remove());
+
+/* =========================
+   APPLY ENGINES
+========================= */
+applyAdsMiddle(document, middleAds);
+applyAdsInPost(document, inPostAds);
+
+const output =
+  document.body?.innerHTML ||
+  document.documentElement?.innerHTML ||
+  html;
+---
+
+<div class="table-wrapper post-content" set:html={output} />
+
+{inPostAds.length > 0 && (
+  <script is:client="load">
+    window.__ADS_MAP__ = {
+      {inPostAds.map(ad => `
+        "${ad.slot_id}": \`${ad.script}\`,
+      `).join("")}
+    };
+  </script>
+)}
+
+<script is:client="load">
+  import { lazyLoadAds } from "./ads/adsLazyLoader";
+
+  lazyLoadAds(window.__ADS_MAP__ || {}, {
+    rootMargin: "300px 0px",
+    maxConcurrent: 2,
+    failTimeout: 2500
+  });
+</script>

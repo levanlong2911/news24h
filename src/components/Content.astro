@@ -1,5 +1,5 @@
 ---
-import PositionAd from "../components/PositionAd.astro";
+// import PositionAd from "../components/ads/AdsPosition.astro";
 import type { Post } from "../types.ts";
 
 interface Props {
@@ -45,8 +45,6 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
                 <img
                   src={thumbnail}
                   alt={title}
-                  loading="lazy"
-                  decoding="async"
                 />
               </a>
             </div>
@@ -78,9 +76,9 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
             </div>
           </div>
 
-          {(index + 1) % 2 === 0 && inPostAds?.length > 0 && (
+          {/* {(index + 1) % 2 === 0 && inPostAds?.length > 0 && (
             <PositionAd position="in-post" ads={ads} />
-          )}
+          )} */}
         </>
       );
     })

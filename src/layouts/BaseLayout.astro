@@ -61,6 +61,7 @@ const {
         })}
       </script>
     )}
+    <slot name="head" />
     <!-- HEADER ADS -->
     <HeaderAds ads={ads.header} />
 
@@ -68,7 +69,6 @@ const {
   <body>
     <Navbar />
     <!-- TOP ADS -->
-    <!-- <AdsPosition position="top" ads={ads.top} /> -->
     <main>
       <slot />
     </main>
@@ -81,5 +81,39 @@ const {
         adsconex.cmd.push(() => adsconex.run("feji_default"));
       }
     </script>
+    <script is:client="only">
+      (() => {
+        const DEFAULT_TIMEOUT = 3500;
+        const MIN_HEIGHT = 50;
+
+        function checkSlot(slot) {
+          const timeout =
+            Number(slot.dataset.adsTimeout) || DEFAULT_TIMEOUT;
+
+          setTimeout(() => {
+            const iframes = slot.querySelectorAll("iframe");
+            const height = slot.offsetHeight;
+
+            if (!iframes.length || height < MIN_HEIGHT) {
+              console.warn(
+                "[ADS FAIL]",
+                slot.dataset.adsPosition
+              );
+              slot.remove();
+            } else {
+              console.log(
+                "[ADS OK]",
+                slot.dataset.adsPosition
+              );
+            }
+          }, timeout);
+        }
+
+        document
+          .querySelectorAll(".ads-slot")
+          .forEach(checkSlot);
+      })();
+    </script>
+
   </body>
 </html>

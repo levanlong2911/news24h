@@ -1,11 +1,13 @@
 ---
-import Layout404 from '../layouts/Layout404.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<Layout404 pageTitle="Page Not Found">
+<BaseLayout>
   <section class="not-found">
     <h1>404 - Page Not Found</h1>
     <p>Sorry, the post you're looking for doesn't exist or may have been removed.</p>
-    <a href="/" class="btn">Return to Homepage</a>
+    <a href="/" class="btn">
+      <h4>Return to Homepage</h4>
+    </a>
   </section>
-</Layout404>
+</BaseLayout>

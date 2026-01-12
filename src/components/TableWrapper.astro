@@ -5,5 +5,7 @@ export interface Props {
 const { htmlContent } = Astro.props;
 ---
 
-<div class="table-wrapper" set:html={htmlContent} />
+<div class="table-wrapper">
+  <slot />
+</div>
 

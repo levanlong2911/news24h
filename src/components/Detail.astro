@@ -1,17 +1,12 @@
 ---
-import { splitParagraphsWithAds } from "../utils/html.utils.ts";
-import { extractScripts } from "../utils/ads.utils.ts";
-import PositionAd from "./PositionAd.astro";
-import TableWrapper from "../components/TableWrapper.astro";
 import type { Post } from "../types.ts";
-import { fetchAds } from "../lib/api";
-import { injectInPostAds } from "../lib/injectInPostAds";
-import type { AdsMap } from "../types/ads"
-import { injectAdsByParagraph } from "../utils/injectAdsByParagraph";
+import PostContent from "../components/PostContent.astro";
+import type { AdItem } from "../types/ads";
 
-const { post, relatedPosts } = Astro.props as {
+const { post, relatedPosts, ads } = Astro.props as {
   post: Post;
   relatedPosts: Post[];
+  ads?: Record<string, AdItem[]>;
 };
 // const inPostAds = ads?.["in-post"] || [];
 // const { post } = Astro.props as {
@@ -20,9 +15,9 @@ const { post, relatedPosts } = Astro.props as {
 // 🤖 BOT → NO ADS (SEO CLEAN)
 const ua = Astro.request.headers.get("user-agent") || "";
 const isBot = /googlebot|bingbot|yandex|duckduckbot|baiduspider/i.test(ua);
-const contentHtml = isBot
-  ? post.content
-  : injectAdsByParagraph(post.content);
+// const contentHtml = isBot
+//   ? post.content
+//   : injectAdsByParagraph(post.content);
 
 // ULTRA PROMAX: inject in-post ads (USER ONLY)
 // const contentParts = injectInPostAds(
@@ -55,7 +50,15 @@ const contentHtml = isBot
     <div id="adsconex-video-container"></div>
     <!-- /video -->
     <article class="post-body">
-      <TableWrapper htmlContent={contentHtml} />
+      {isBot ? (
+        <div class="table-wrapper post-content" set:html={post.content} />
+      ) : (
+        <PostContent
+          html={post.content}
+          middleAds={ads?.middle || []}
+          inPostAds={ads?.["in-post"] || []}
+        />
+      )}
     </article>
   </div>
 </section>
