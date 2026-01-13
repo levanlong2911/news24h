@@ -1,13 +1,13 @@
+// src/components/ads/adsInPostEngine.ts
 import type { AdItem } from "../../types/ads";
 
-const MAX_ADS = 18;
+const MAX_ADS = 12;
 
 export function applyAdsInPost(
   document: Document,
   ads: AdItem[] = []
 ) {
-  // Không có ads → không chèn
-  if (!Array.isArray(ads) || !ads.length) return;
+  if (!ads.length) return;
 
   let pIndex = 0;
   let slotIndex = 2;
@@ -21,20 +21,22 @@ export function applyAdsInPost(
   for (const p of paragraphs) {
     pIndex++;
 
-    // chỉ bắt đầu từ p3
+    // ⛔ Bỏ 2 đoạn đầu cho nội dung mượt
     if (pIndex < 3) continue;
-
-    // bỏ p6
     if (pIndex === 6) continue;
+
+    // ✅ Sau mỗi 2 <p> thì chèn 1 ads
+    if ((pIndex - 2) % 2 !== 0) continue;
 
     if (slotIndex > MAX_ADS) break;
 
     const slot = document.createElement("div");
     slot.className = "ad-in-post";
-    slot.dataset.adSlot =
-      `div_adsconex_banner_responsive_${slotIndex}`;
 
-    slotIndex++;
+    // 🔥 DIV ĐÍCH – NETWORK TỰ BƠM IFRAME
+    slot.id = `div_adsconex_banner_responsive_${slotIndex}`;
+
     p.after(slot);
+    slotIndex++;
   }
 }
