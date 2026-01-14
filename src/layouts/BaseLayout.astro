@@ -10,8 +10,8 @@ const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 const {
   pageTitle = 'News Day',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
-  pageImage = '${WEB_BASE}/default.jpg',
-  pageUrl = '${WEB_BASE}',
+  pageImage = `${WEB_BASE}/default.jpg`,
+  pageUrl = WEB_BASE,
   isArticle = false,
   publishedAt = '',
   updatedAt = '',
@@ -63,7 +63,7 @@ const {
     )}
     <slot name="head" />
     <!-- HEADER ADS -->
-    <HeaderAds ads={ads.header} />
+    {ads?.header?.length && <HeaderAds ads={ads.header} />}
 
   </head>
   <body>
