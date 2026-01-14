@@ -1,8 +1,10 @@
 ---
-const response = await fetch('${API_BASE}/api/posts');
+const API_BASE = import.meta.env.PUBLIC_API_BASE.replace(/\/$/, "");
+const response = await fetch(`${API_BASE}/api/posts`);
 const jsonData = await response.json();
-console.log(jsonData); // Kiểm tra dữ liệu trả về từ API
 const posts = Array.isArray(jsonData.data) ? jsonData.data : [];
+const stripHtml = (html = '') =>
+  html.replace(/<\/?[^>]+(>|$)/g, '');
 ---
 
 <div class="grid-container">
@@ -22,10 +24,15 @@ const posts = Array.isArray(jsonData.data) ? jsonData.data : [];
                             </h3>
                         </a>
                         <span>
-                            <span>{post.admin?.name}, {new Date(post.updated_at).toLocaleDateString()}, {post.category?.name}</span>
+                            {post.admin?.name ?? 'Admin'}
+                            {', '}
+                            {post.updated_at
+                                ? new Date(post.updated_at).toLocaleDateString()
+                                : ''}
+                            {post.category?.name ? `, ${post.category.name}` : ''}
                         </span>
                         <p class="description">
-                            {post.content.replace(/<\/?[^>]+(>|$)/g, "").slice(0, 150) + "..."}
+                            {stripHtml(post.content).slice(0, 150)}…
                         </p>
                     </div>
                 </div>

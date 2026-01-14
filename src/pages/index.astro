@@ -7,12 +7,31 @@ import type { Post } from '../types';
 
 // Fallback
 const emptyList: Post[] = [];
+let posts: Post[] = emptyList;
+let ads: any = {};
 
-// Fetch posts + ads
-const [posts, ads] = await Promise.all([
-  fetchPosts(),
-  fetchAds(),
-]);
+try {
+  const result = await Promise.allSettled([
+    fetchPosts(1, 'v1'),
+    fetchAds(),
+  ]);
+
+  // posts
+  if (
+    result[0].status === 'fulfilled' &&
+    result[0].value &&
+    Array.isArray(result[0].value.items)
+  ) {
+    posts = result[0].value.items;
+  }
+
+  // ads
+  if (result[1].status === 'fulfilled') {
+    ads = result[1].value || {};
+  }
+} catch {
+  // ❗ tuyệt đối không throw
+}
 
 const pageTitle = 'Home';
 ---

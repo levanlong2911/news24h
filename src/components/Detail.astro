@@ -8,23 +8,34 @@ const { post, relatedPosts, ads } = Astro.props as {
   relatedPosts: Post[];
   ads?: Record<string, AdItem[]>;
 };
-// const inPostAds = ads?.["in-post"] || [];
-// const { post } = Astro.props as {
-//   post: Post;
-// };
-// 🤖 BOT → NO ADS (SEO CLEAN)
+
+// 🛡️ HARD GUARD – không cho SSR chết
+if (!post) {
+  return null;
+}
+
 const ua = Astro.request.headers.get("user-agent") || "";
 const isBot = /googlebot|bingbot|yandex|duckduckbot|baiduspider/i.test(ua);
-// const contentHtml = isBot
-//   ? post.content
-//   : injectAdsByParagraph(post.content);
 
-// ULTRA PROMAX: inject in-post ads (USER ONLY)
-// const contentParts = injectInPostAds(
-//   post.content,
-//   inPostAds,
-//   3
-// );
+// 🛡️ SAFE DATA
+const title = post.title || "Untitled";
+const content = typeof post.content === "string" ? post.content : "";
+const author = post.admin?.name || "Admin";
+const category = post.category?.name || "";
+const updatedAt = post.updated_at
+  ? new Date(post.updated_at).toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : "";
+
+// 🛡️ SAFE ADS
+const middleAds = Array.isArray(ads?.middle) ? ads!.middle : [];
+const inPostAds = Array.isArray(ads?.["in-post"]) ? ads!["in-post"] : [];
+
+// 🛡️ SAFE RELATED
+const safeRelated = Array.isArray(relatedPosts) ? relatedPosts : [];
 ---
 
 <section id="content">
@@ -32,17 +43,13 @@ const isBot = /googlebot|bingbot|yandex|duckduckbot|baiduspider/i.test(ua);
   <div id="div_adsconex_banner_responsive_1"></div>
   <!-- /ads Banner -->
   <div class="detail-title">
-    <h1>{post.title}</h1>
+    <h1>{title}</h1>
   </div>
   <div class="detail-infor">
     <p>
-      {post.admin?.name || "Admin"} |
-      {new Date(post.updated_at).toLocaleDateString("en-US", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })} |
-      {post.category?.name}
+      {author}
+      {updatedAt ? ` | ${updatedAt}` : ""}
+      {category ? ` | ${category}` : ""}
     </p>
   </div>
   <div class="detail-content">
@@ -54,34 +61,43 @@ const isBot = /googlebot|bingbot|yandex|duckduckbot|baiduspider/i.test(ua);
         <div class="table-wrapper post-content" set:html={post.content} />
       ) : (
         <PostContent
-          html={post.content}
-          middleAds={ads?.middle || []}
-          inPostAds={ads?.["in-post"] || []}
+          html={content}
+          middleAds={middleAds}
+          inPostAds={inPostAds}
         />
       )}
     </article>
   </div>
 </section>
 
-<section class="related-posts">
-  <div class="section-title">
-    <h2>Related Posts</h2>
-  </div>
-  <div class="related-grid">
-    {
-      relatedPosts.slice(0, 6).map((item) => (
-        <div class="related-item" key={item.id}>
-          <a href={`/post/${item.slug}`}>
-            <img
-              src={item.thumbnail}
-              alt={item.title}
-              class="related-img"
-            />
-            <h3 class="related-title">{item.title}</h3>
-          </a>
-        </div>
-      ))
-    }
-  </div>
-</section>
+{safeRelated.length > 0 && (
+  <section class="related-posts">
+    <div class="section-title">
+      <h2>Related Posts</h2>
+    </div>
+
+    <div class="related-grid">
+      {safeRelated.slice(0, 6).map((item) => {
+        const slug = item.slug;
+        if (!slug) return null;
+
+        return (
+          <div class="related-item" key={item.id}>
+            <a href={`/post/${slug}`}>
+              <img
+                src={item.thumbnail || "/default.jpg"}
+                alt={item.title || "Post"}
+                class="related-img"
+                loading="lazy"
+              />
+              <h3 class="related-title">
+                {item.title || "Untitled"}
+              </h3>
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+)}
 

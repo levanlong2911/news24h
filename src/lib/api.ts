@@ -1,15 +1,25 @@
 import type { AdsMap } from "../types/ads";
 
+type FetchOptions = {
+  ttl?: number;
+  stale?: number;
+  timeout?: number;
+  version?: string; // 👈 cache version từ Laravel
+};
+
 const memoryCache = new Map<string, any>();
 const inFlight = new Map<string, Promise<any>>();
 
-const API_KEY = import.meta.env.PUBLIC_API_KEY;
+const API_KEY  = import.meta.env.PUBLIC_API_KEY;
 const API_BASE = import.meta.env.PUBLIC_API_BASE.replace(/\/$/, "");
-const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, "");
 
 function buildURL(path: string) {
   if (/^https?:\/\//.test(path)) return path;
   return `${API_BASE}/${path.replace(/^\/+/, "")}`;
+}
+
+function buildCacheKey(url: string, version?: string) {
+  return version ? `${url}::v=${version}` : url;
 }
 
 export async function apiFetch<T>(
@@ -19,31 +29,33 @@ export async function apiFetch<T>(
   cfg: FetchOptions = {}
 ): Promise<T> {
   const url = buildURL(path);
+  const key = buildCacheKey(url, cfg.version);
 
-  const ttl = cfg.ttl ?? 60_000;
-  const stale = cfg.stale ?? 300_000;
+  const ttl       = cfg.ttl ?? 60_000;
+  const stale     = cfg.stale ?? 300_000;
   const timeoutMs = cfg.timeout ?? 6_000;
 
-  const now = Date.now();
-  const cached = memoryCache.get(url);
+  const now    = Date.now();
+  const cached = memoryCache.get(key);
 
   // ✅ cache còn hạn
   if (cached && cached.expire > now) {
     return cached.data as T;
   }
 
-  // ✅ cache stale
+  // ✅ stale-while-revalidate
   if (cached && cached.staleUntil > now) {
-    void safeRevalidate(url, options, fallback, ttl, stale, timeoutMs);
+    void safeRevalidate(key, url, options, fallback, ttl, stale, timeoutMs);
     return cached.data as T;
   }
 
   // ✅ chống duplicate request
-  if (inFlight.has(url)) {
-    return inFlight.get(url)!;
+  if (inFlight.has(key)) {
+    return inFlight.get(key)!;
   }
 
   const promise = safeRevalidate(
+    key,
     url,
     options,
     fallback,
@@ -52,17 +64,17 @@ export async function apiFetch<T>(
     timeoutMs
   );
 
-  inFlight.set(url, promise);
+  inFlight.set(key, promise);
 
-  // ⚠️ đảm bảo xóa inFlight dù promise lỗi
   promise.finally(() => {
-    inFlight.delete(url);
+    inFlight.delete(key);
   });
 
   return promise;
 }
 
 async function safeRevalidate<T>(
+  key: string,
   url: string,
   options: RequestInit,
   fallback: T,
@@ -88,55 +100,60 @@ async function safeRevalidate<T>(
 
     const json = await res.json();
 
-    // ❗ PROMAX: không tin API
     if (!json || json.success !== true) {
       throw new Error("Invalid API payload");
     }
 
     const data = (json.data ?? fallback) as T;
 
-    memoryCache.set(url, {
+    memoryCache.set(key, {
       data,
       expire: Date.now() + ttl,
       staleUntil: Date.now() + stale,
     });
 
     return data;
+
   } catch {
-    const cached = memoryCache.get(url);
+    const cached = memoryCache.get(key);
     return (cached?.data ?? fallback) as T;
   } finally {
     clearTimeout(timer);
   }
 }
-
-
-export const fetchPosts = async () => {
+export const fetchPosts = async (page = 1, version = "v1") => {
   const res = await apiFetch<any>(
-    "posts",
+    `posts?page=${page}`,
     {},
-    [],
-    { ttl: 30_000, stale: 180_000 }
+    { items: [], meta: null },
+    {
+      ttl: 30_000,
+      stale: 180_000,
+      version, // 👈 CacheVersion::POSTS
+    }
   );
 
-  // PROMAX UNWRAP
-  if (Array.isArray(res)) return res;
-  if (Array.isArray(res?.data)) return res.data;
-  if (Array.isArray(res?.data?.data)) return res.data.data;
-
-  return [];
+  return {
+    items: res?.items ?? [],
+    meta: res?.meta ?? null,
+  };
 };
 
-
-export const fetchPostDetail = async (slug: string) => {
+export const fetchPostDetail = async (slug: string, version = "v1") => {
   const res = await apiFetch<any>(
     `posts/${slug}`,
     {},
-    { post: null, related_posts: [] },
-    { ttl: 120_000, stale: 600_000 }
+    null,
+    {
+      ttl: 120_000,
+      stale: 600_000,
+      version, // 👈 CacheVersion::POST
+    }
   );
 
-  return res?.post ? res : null;
+  if (!res || !res.post) return null;
+
+  return res;
 };
 
 export const fetchAds = () =>
@@ -144,5 +161,8 @@ export const fetchAds = () =>
     "ads",
     {},
     {},
-    { ttl: 300_000, stale: 1_800_000 }
+    {
+      ttl: 300_000,
+      stale: 1_800_000,
+    }
   );

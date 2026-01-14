@@ -9,18 +9,41 @@ import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
 const { slug } = Astro.params;
 
 // Fallback
-const emptyPost = null;
 const emptyList: Post[] = [];
-const emptyAds = {};
+let postData: any = null;
+let postsRes: any = null;
+let ads: any = {};
 
-// Parallel fetch: post detail, sidebar posts, ads
-const [postData, posts, ads] = await Promise.all([
-  fetchPostDetail(slug),
-  fetchPosts(),
-  fetchAds(),
-]);
-console.log("ADS 123:", ads);
-// Nếu post null → trả 404 SEO-safe
+// PROMAX: không bao giờ throw
+try {
+  const results = await Promise.allSettled([
+    fetchPostDetail(slug),
+    fetchPosts(1, 'v1'),
+    fetchAds(),
+  ]);
+
+  // post detail (QUAN TRỌNG NHẤT)
+  if (results[0].status === 'fulfilled') {
+    postData = results[0].value;
+  }
+
+  // sidebar posts
+  if (results[1].status === 'fulfilled') {
+    postsRes = results[1].value;
+  }
+
+  // ads
+  if (results[2].status === 'fulfilled') {
+    ads = results[2].value || {};
+  }
+} catch {
+  // ❗ tuyệt đối không throw
+}
+
+// ❗ unwrap posts
+const posts: Post[] = postsRes?.items ?? emptyList;
+
+// ❗ nếu không có post → 404 SEO-safe
 if (!postData || !postData.post) {
   return new Response(null, { status: 404 });
 }

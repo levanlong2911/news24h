@@ -7,7 +7,7 @@ interface Props {
   ads?: Record<string, any[]>;
 }
 
-const { posts, ads }: Props = Astro.props;
+const { posts = [], ads }: Props = Astro.props;
 
 const safePosts: Post[] = Array.isArray(posts) ? posts : [];
 const inPostAds = ads?.["in-post"] || [];
@@ -24,13 +24,12 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
   }
 
   {
-    safePosts.map((post: Post, index: number) => {
-      const slug = post.slug ?? "";
-      if (!slug) return null;
+    safePosts.map((post, index) => {
+      if (!post?.slug) return null;
 
       const title = post.title ?? "Untitled";
       const thumbnail =
-        post.thumbnail || "default.jpg";
+        post.thumbnail || "/default.jpg";
 
       const description =
         post.content
@@ -39,9 +38,9 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
 
       return (
         <>
-          <div class="grid-content">
+          <div class="grid-content" key={post.id}>
             <div class="post-img">
-              <a href={`/post/${slug}`} title={title}>
+              <a href={`/post/${post.slug}`} title={title}>
                 <img
                   src={thumbnail}
                   alt={title}
@@ -51,14 +50,14 @@ const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
 
             <div class="posts-title">
               <div class="content-title">
-                <a href={`/post/${slug}`} title={title}>
+                <a href={`/post/${post.slug}`} title={title}>
                   <h3 class="text-black font-bold">{title}</h3>
                 </a>
               </div>
 
               <div class="content-date">
                 <span>
-                  {post.admin?.name || "Admin"},{" "}
+                  {post.admin?.name},{" "}
                   {post.updated_at
                     ? new Date(post.updated_at).toLocaleDateString("en-US", {
                         day: "numeric",
