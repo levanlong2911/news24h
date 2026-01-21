@@ -1,0 +1,197 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const title = "Privacy Policy - Newsday";
+const description =
+  "Privacy Policy of Newsday (newsday.feji.io). Learn how we collect, use, and protect your personal information.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="policy">
+    <header class="policy-header">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: {new Date().toLocaleDateString()}</p>
+    </header>
+
+    <article class="policy-content">
+      <p>
+        At <strong>newsday.feji.io</strong>, accessible from
+        <a href="https://newsday.feji.io">https://newsday.feji.io</a>,
+        protecting the privacy of our visitors is one of our highest priorities.
+        This Privacy Policy document outlines the types of information that are
+        collected and recorded by Newsday and how we use it.
+      </p>
+
+      <h2>1. Consent</h2>
+      <p>
+        By using our website, you hereby consent to our Privacy Policy and agree
+        to its terms.
+      </p>
+
+      <h2>2. Information We Collect</h2>
+      <p>
+        The personal information you are asked to provide, and the reasons why
+        you are asked to provide it, will be made clear at the point we request
+        such information.
+      </p>
+      <ul>
+        <li>Name and email address when contacting us</li>
+        <li>Message content and attachments you send</li>
+        <li>Technical data such as IP address, browser type, and device</li>
+      </ul>
+
+      <h2>3. How We Use Your Information</h2>
+      <ul>
+        <li>Operate and maintain our website</li>
+        <li>Improve website performance and user experience</li>
+        <li>Analyze usage trends and audience behavior</li>
+        <li>Communicate with users for support or updates</li>
+        <li>Detect and prevent fraud or abuse</li>
+      </ul>
+
+      <h2>4. Log Files</h2>
+      <p>
+        Newsday follows a standard procedure of using log files. These files log
+        visitors when they visit websites. The information collected includes IP
+        addresses, browser type, ISP, date and time stamps, referring pages, and
+        clicks. This data is not linked to personally identifiable information.
+      </p>
+
+      <h2>5. Cookies and Web Beacons</h2>
+      <p>
+        Like many websites, Newsday uses cookies to store visitor preferences and
+        optimize content based on browser type or other information.
+      </p>
+
+      <h2>6. Advertising & Third-Party Cookies</h2>
+      <p>
+        We may display advertisements from third-party ad networks such as Google.
+        These ad servers may use cookies, JavaScript, or web beacons to measure ad
+        effectiveness and personalize advertising content.
+      </p>
+      <p>
+        Google uses the DoubleClick DART cookie to serve ads based on users’ visits
+        to this and other websites. Users may opt out by visiting:
+        <a
+          href="https://policies.google.com/technologies/ads"
+          target="_blank"
+          rel="nofollow noopener"
+        >
+          Google Ads Privacy Policy
+        </a>.
+      </p>
+
+      <h2>7. Third-Party Privacy Policies</h2>
+      <p>
+        Newsday’s Privacy Policy does not apply to other advertisers or websites.
+        We advise you to consult the respective Privacy Policies of third-party ad
+        servers for more detailed information.
+      </p>
+
+      <h2>8. GDPR Data Protection Rights</h2>
+      <ul>
+        <li>The right to access your personal data</li>
+        <li>The right to rectification</li>
+        <li>The right to erasure</li>
+        <li>The right to restrict processing</li>
+        <li>The right to object to processing</li>
+        <li>The right to data portability</li>
+      </ul>
+
+      <h2>9. Children’s Information</h2>
+      <p>
+        Newsday does not knowingly collect any Personal Identifiable Information
+        from children under the age of 13. If you believe your child has provided
+        personal information on our website, please contact us immediately.
+      </p>
+
+      <h2>10. Changes to This Privacy Policy</h2>
+      <p>
+        We may update our Privacy Policy from time to time. Any changes will be
+        posted on this page and are effective immediately after posting.
+      </p>
+
+      <h2>11. Contact Us</h2>
+      <p>
+        If you have any questions or suggestions about this Privacy Policy, please
+        contact us via the <a href="/contact">Contact page</a>.
+      </p>
+    </article>
+  </section>
+</BaseLayout>
+
+<style>
+    /* =========================
+   PRIVACY POLICY
+========================= */
+.policy {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: #fff;
+}
+
+.policy-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.policy-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.policy-header .updated {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.policy-content {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #333;
+}
+
+.policy-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.policy-content p {
+  margin-bottom: 1rem;
+}
+
+.policy-content ul {
+  margin: 0.5rem 0 1rem 1.25rem;
+}
+
+.policy-content ul li {
+  list-style: disc;
+  margin-bottom: 0.5rem;
+}
+
+.policy-content a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.policy-content a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .policy {
+    padding: 1.25rem 1rem;
+  }
+
+  .policy-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+</style>

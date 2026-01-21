@@ -1,0 +1,142 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const title = "About Us - Newsday";
+const description =
+  "Learn more about Newsday – an independent digital news platform delivering timely, reliable, and insightful stories.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="static-page">
+    <header class="static-header">
+      <h1>About Newsday</h1>
+      <p class="subtitle">
+        Independent digital news. Clear facts. Real stories.
+      </p>
+    </header>
+
+    <article class="static-content">
+      <p>
+        <strong>Newsday</strong> (<a href="https://newsday.feji.io">newsday.feji.io</a>)
+        is an independent digital news platform dedicated to delivering timely,
+        accurate, and relevant information to readers around the world.
+      </p>
+
+      <p>
+        Our mission is to provide clear reporting, balanced perspectives, and
+        factual coverage across a wide range of topics including current events,
+        world news, technology, business, and social trends.
+      </p>
+
+      <h2>1. Our Mission</h2>
+      <p>
+        We believe that access to reliable information is essential in today’s
+        fast-moving digital world. Newsday exists to help readers stay informed,
+        think critically, and understand the stories shaping our society.
+      </p>
+
+      <h2>2. Editorial Independence</h2>
+      <p>
+        Newsday operates independently. Our editorial content is created with
+        integrity and is not influenced by advertisers, sponsors, or external
+        organizations.
+      </p>
+
+      <h2>3. Advertising & Monetization</h2>
+      <p>
+        To support our operations, Newsday may display advertisements provided by
+        third-party advertising networks such as Google AdSense. Advertising does
+        not affect our editorial decisions or content quality.
+      </p>
+
+      <h2>4. Transparency & Trust</h2>
+      <p>
+        We are committed to transparency, user privacy, and responsible data
+        practices. Please review our
+        <a href="/privacy-policy">Privacy Policy</a>
+        for more information.
+      </p>
+
+      <h2>5. Get in Touch</h2>
+      <p>
+        We value feedback from our readers. If you have questions, suggestions,
+        or concerns, please visit our
+        <a href="/contact">Contact page</a>.
+      </p>
+    </article>
+  </section>
+</BaseLayout>
+<style>
+    /* =========================
+   STATIC PAGES (About, Contact, Policy)
+========================= */
+.static-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: #fff;
+}
+
+.static-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.static-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.static-header .subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.static-content {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #333;
+}
+
+.static-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.static-content p {
+  margin-bottom: 1rem;
+}
+
+.static-content a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.static-content a:hover {
+  text-decoration: underline;
+}
+
+.contact-box {
+  background: #f5f7fa;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .static-page {
+    padding: 1.25rem 1rem;
+  }
+
+  .static-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+</style>

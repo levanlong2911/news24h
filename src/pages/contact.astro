@@ -1,0 +1,132 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const title = "Contact Us - Newsday";
+const description =
+  "Contact Newsday for inquiries, feedback, or support. We value communication with our readers.";
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="static-page">
+    <header class="static-header">
+      <h1>Contact Us</h1>
+      <p class="subtitle">
+        We'd love to hear from you
+      </p>
+    </header>
+
+    <article class="static-content">
+      <p>
+        If you have any questions, feedback, business inquiries, or would like to
+        report an issue, feel free to reach out to us.
+      </p>
+
+      <h2>1. General Inquiries</h2>
+      <p>
+        For general questions or feedback regarding our content, please email us:
+      </p>
+
+      <p class="contact-box">
+        📧 <strong>Email:</strong>
+        <a href="mailto:contact@newsday.feji.io">
+          contact@newsday.feji.io
+        </a>
+      </p>
+
+      <h2>2. Advertising & Partnerships</h2>
+      <p>
+        If you are interested in advertising opportunities or partnerships with
+        Newsday, please contact us via the same email address above with the
+        subject line <strong>“Advertising Inquiry”</strong>.
+      </p>
+
+      <h2>3. Privacy Concerns</h2>
+      <p>
+        For questions related to privacy, data protection, or policy matters,
+        please review our
+        <a href="/privacy-policy">Privacy Policy</a>
+        or contact us directly.
+      </p>
+
+      <h2>4. Response Time</h2>
+      <p>
+        We aim to respond to all legitimate inquiries within
+        <strong>24–72 hours</strong>.
+      </p>
+    </article>
+  </section>
+</BaseLayout>
+<style>
+    /* =========================
+   STATIC PAGES (About, Contact, Policy)
+========================= */
+.static-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: #fff;
+}
+
+.static-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.static-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.static-header .subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.static-content {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #333;
+}
+
+.static-content h2 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.static-content p {
+  margin-bottom: 1rem;
+}
+
+.static-content a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.static-content a:hover {
+  text-decoration: underline;
+}
+
+.contact-box {
+  background: #f5f7fa;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .static-page {
+    padding: 1.25rem 1rem;
+  }
+
+  .static-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+</style>

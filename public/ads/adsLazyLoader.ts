@@ -8,65 +8,54 @@ export function lazyLoadAds() {
         if (!entry.isIntersecting) return;
 
         const slot = entry.target as HTMLElement;
-
-        // ⛔ tránh chạy lại nhiều lần
         if (slot.dataset.loaded === "1") {
           observer.unobserve(slot);
           return;
         }
         slot.dataset.loaded = "1";
 
-        /* =========================
-           1️⃣ RESERVE SPACE (CLS)
-        ========================= */
+        // Reserve space – CLS safe
         if (!slot.style.minHeight) {
-          slot.style.minHeight = "250px";
+          slot.style.minHeight = "min(250px, 30vh)";
         }
 
-        /* =========================
-           2️⃣ TRIGGER ADS NETWORK
-           (KHÔNG inject script)
-        ========================= */
+        // Trigger network (NO script inject)
         const w = window as any;
-
         if (w.adsconex?.cmd) {
           w.adsconex.cmd.push(() => {
-            // run() không cần param → scan DOM theo ID
             w.adsconex.run?.();
           });
         }
 
-        /* =========================
-           3️⃣ FAIL DETECT (REAL)
-           → kiểm tra iframe bên trong
-        ========================= */
+        // Fail detect – safe
         setTimeout(() => {
           const iframe = slot.querySelector("iframe");
-
-          // iframe không tồn tại hoặc cao < 50px → FAIL
           if (!iframe || iframe.offsetHeight < 50) {
-            slot.remove();
+            slot.style.display = "none";
           }
-        }, 2500);
+        }, 4000);
 
         observer.unobserve(slot);
       });
     },
     {
-      rootMargin: "300px 0px",
+      rootMargin: "400px 0px",
       threshold: 0.01,
     }
   );
 
-  /* =========================
-     OBSERVE ALL IN-POST SLOTS
-  ========================= */
   document
     .querySelectorAll<HTMLElement>(".ad-in-post[id]")
     .forEach((slot) => observer.observe(slot));
 }
 
-/* =========================
-   AUTO RUN
-========================= */
-lazyLoadAds();
+/* ===== START AFTER LCP ===== */
+function runLazyAds() {
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(lazyLoadAds, { timeout: 2000 });
+  } else {
+    window.addEventListener("load", lazyLoadAds);
+  }
+}
+
+runLazyAds();
