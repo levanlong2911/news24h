@@ -39,17 +39,17 @@ const output =
   document.body?.innerHTML ||
   document.documentElement?.innerHTML ||
   html;
+
+const ADS_MAP = Object.fromEntries(
+  inPostAds.map(ad => [ad.slot_id, ad.script])
+);
 ---
 
 <div class="table-wrapper post-content" set:html={output} />
 
 {inPostAds.length > 0 && (
-  <script is:client="load">
-    window.__ADS_MAP__ = {
-      {inPostAds.map(ad => `
-        "${ad.slot_id}": \`${ad.script}\`,
-      `).join("")}
-    };
+  <script is:client="load" define:vars={{ ADS_MAP }}>
+    window.__ADS_MAP__ = ADS_MAP;
   </script>
 )}
 
