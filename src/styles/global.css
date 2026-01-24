@@ -467,6 +467,7 @@ table th:first-child {
 .in-post-ad {
   margin: 24px 0;
   min-height: 250px;
+  text-align: center;
 }
 
 #adsconex-video-container,

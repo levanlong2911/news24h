@@ -1,61 +1,46 @@
-export function lazyLoadAds() {
-  if (typeof window === "undefined") return;
-  if (!("IntersectionObserver" in window)) return;
+type AdStatus = "pending" | "active" | "failed";
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-
-        const slot = entry.target as HTMLElement;
-        if (slot.dataset.loaded === "1") {
-          observer.unobserve(slot);
-          return;
-        }
-        slot.dataset.loaded = "1";
-
-        // Reserve space – CLS safe
-        if (!slot.style.minHeight) {
-          slot.style.minHeight = "min(250px, 30vh)";
-        }
-
-        // Trigger network (NO script inject)
-        const w = window as any;
-        if (w.adsconex?.cmd) {
-          w.adsconex.cmd.push(() => {
-            w.adsconex.run?.();
-          });
-        }
-
-        // Fail detect – safe
-        setTimeout(() => {
-          const iframe = slot.querySelector("iframe");
-          if (!iframe || iframe.offsetHeight < 50) {
-            slot.style.display = "none";
-          }
-        }, 4000);
-
-        observer.unobserve(slot);
-      });
-    },
-    {
-      rootMargin: "400px 0px",
-      threshold: 0.01,
-    }
+export function watchAdsDOM({
+  timeout = 4000,
+  minHeight = 40
+} = {}) {
+  const slots = document.querySelectorAll<HTMLElement>(
+    ".ad-in-post[data-ad-slot]"
   );
 
-  document
-    .querySelectorAll<HTMLElement>(".ad-in-post[id]")
-    .forEach((slot) => observer.observe(slot));
-}
+  slots.forEach(slot => {
+    let status: AdStatus = "pending";
 
-/* ===== START AFTER LCP ===== */
-function runLazyAds() {
-  if ("requestIdleCallback" in window) {
-    requestIdleCallback(lazyLoadAds, { timeout: 2000 });
-  } else {
-    window.addEventListener("load", lazyLoadAds);
-  }
-}
+    const checkVisible = () => {
+      const rect = slot.getBoundingClientRect();
+      const height = rect.height;
 
-runLazyAds();
+      // iframe hoặc div con có height thật
+      if (height >= minHeight) {
+        status = "active";
+        slot.dataset.adStatus = "active";
+        observer.disconnect();
+        clearTimeout(timer);
+      }
+    };
+
+    const observer = new MutationObserver(checkVisible);
+    observer.observe(slot, {
+      childList: true,
+      subtree: true,
+      attributes: true
+    });
+
+    const timer = setTimeout(() => {
+      if (status === "pending") {
+        status = "failed";
+        slot.dataset.adStatus = "failed";
+        slot.remove(); // hoặc fallback
+        observer.disconnect();
+      }
+    }, timeout);
+
+    // initial check
+    requestAnimationFrame(checkVisible);
+  });
+}
