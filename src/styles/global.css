@@ -475,6 +475,51 @@ table th:first-child {
   box-sizing: border-box;
 }
 
+/* =========================
+   ADS SLOT – GLOBAL
+========================= */
+.ad-slot {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  margin: 1.25rem 0;
+  display: block;
+}
+
+/* Chống iframe / video phá layout */
+.ad-slot iframe,
+.ad-slot video,
+.ad-slot img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+
+/* @media (max-width: 767px) {
+  .ad-slot {
+    margin: 1rem -15px; 
+    padding: 0.5rem 0;
+    background: #f9f9f9;
+  }
+} */
+
+/* =========================
+   ADSCONEX HARD FIX
+========================= */
+[id^="div_adsconex"],
+[id^="js_adsconex"] {
+  max-width: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.adsconex-parallax_wrapper,
+.adsconex_video__content_video_ima-ad-container {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
 
 /* Responsive tốt cho khối nội dung */
 @media (min-width: 768px) {
@@ -500,7 +545,20 @@ table th:first-child {
     font-size: 0.875rem;
     padding: 0.6rem;
   }
+
+  .ad-slot {
+    margin: 1rem -15px; /* tràn nhẹ giống news */
+    padding: 0.5rem 0;
+    background: #f9f9f9;
+  }
 }
+
+@media (min-width: 768px) and (max-width: 959px) {
+  .ad-slot {
+    margin: 1.5rem 0;
+  }
+}
+
 
 /*
 small table styles
@@ -691,6 +749,16 @@ table & laptop
   .nav-links li a {
     color: white;
     padding: 0;
+  }
+
+  .ad-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .ad-slot > * {
+    max-width: 100%;
   }
 
 }
