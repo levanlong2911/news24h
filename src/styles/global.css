@@ -496,14 +496,19 @@ table th:first-child {
   margin: 0 auto;
 }
 
-/* ✨ All images & ad containers responsive */
-img, iframe, video, #adsconex-video-container,
-[id^="div_adsconex"], [id^="js_adsconex"] {
+img,
+.post-body iframe,
+.post-body video,
+#adslot iframe,
+.ad-slot iframe,
+#adsconex-video-container,
+[id^="div_adsconex"],
+[id^="js_adsconex"] {
+  width: 100% !important;
   max-width: 100%;
-  width: auto !important;
   height: auto !important;
   display: block;
-  margin: 0.75rem auto;
+  margin: 0 auto;
 }
 
 /* Ads container co giãn */
@@ -604,9 +609,9 @@ img, iframe, video, #adsconex-video-container,
   }
 
   .ad-slot {
-    margin: 1rem -15px; /* tràn nhẹ giống news */
-    padding: 0.5rem 0;
-    background: #f9f9f9;
+    margin: 1rem 0;
+    padding: 0;
+    background: transparent;
   }
 }
 
@@ -625,6 +630,13 @@ small table styles
   .table-wrapper td {
     padding: 0.5rem;
     font-size: 0.875rem; 
+  }
+}
+
+@media (max-width: 959px) {
+  body {
+    max-width: 100%;
+    margin: 0;
   }
 }
 
