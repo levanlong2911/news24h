@@ -5,6 +5,13 @@
   --secondary: #0A0B5B;
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /*reset */
 body, p, a {
   margin: 0;
@@ -241,18 +248,18 @@ h2,h4 {
   padding-bottom: 15px;
 }
 
-.list-img {
+/* .list-img {
   overflow: hidden;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* Hình ảnh */
-.list-img img {
+/* .list-img img {
   width: 100%;
   height: 100%;
   border-radius: 10px;
-}
+} */
 
 /* Tiêu đề bài viết */
 .post-title {
@@ -372,6 +379,8 @@ footer ul li a:hover {
 .post-body p {
   margin-bottom: 1rem;
   font-size: 1.2rem;
+  /* position: relative;
+  z-index: 1; */
 }
 
 .section-title {
@@ -470,117 +479,41 @@ table th:first-child {
   text-align: center;
 }
 
-#adsconex-video-container,
-#adsconex-video-container * {
-  box-sizing: border-box;
-}
-
-/* =========================
-   ADS SLOT – GLOBAL
-========================= */
-.ad-slot {
+/* Wrapper ngoài */
+.detail-ads-video {
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  margin: 1.25rem 0;
-  display: block;
+  margin-bottom: 10px;
 }
 
-/* Chống iframe / video phá layout */
-.ad-slot iframe,
-.ad-slot video,
-.ad-slot img {
-  max-width: 100% !important;
-  height: auto !important;
-  display: block;
-  margin: 0 auto;
-}
-
-img,
-.post-body iframe,
-.post-body video,
-#adslot iframe,
-.ad-slot iframe,
-#adsconex-video-container,
-[id^="div_adsconex"],
-[id^="js_adsconex"] {
+/* ÉP container gốc của AdsConex */
+#adsconex-video-container {
   width: 100% !important;
-  max-width: 100%;
-  height: auto !important;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Ads container co giãn */
-#adslot, .ad-in-post, .in-post-ad {
-  width: 100%;
-  max-width: 100%;
-  text-align: center;
-  overflow: hidden;
-}
-
-/* Fix overflow nội dung */
-.post-body {
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
-
-
-/* =========================
-   ADSCONEX HARD FIX
-========================= */
-[id^="div_adsconex"],
-[id^="js_adsconex"] {
-  max-width: 100%;
-  overflow: hidden;
-  margin: 0 auto;
-}
-
-.adsconex-parallax_wrapper,
-.adsconex_video__content_video_ima-ad-container {
   max-width: 100% !important;
-  overflow: hidden !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  margin: 0 auto !important;
 }
 
-#adslot,
-.ad-slot,
-#adslot *, .ad-slot * {
-  max-width: 100%;
+/* VideoJS wrapper */
+#adsconex-video-container .video-js {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Video HTML5 */
+#adsconex-video-container video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+}
+
+/* Phòng thủ: mọi div bên trong không được tràn */
+#adsconex-video-container * {
+  max-width: 100% !important;
   box-sizing: border-box;
 }
-
-
-/* Dành cho màn nhỏ (<= 640px) */
-@media only screen and (max-width: 640px) {
-
-  .post-body p {
-    font-size: 1rem;
-    margin: 0.6rem 0;
-  }
-
-  .post-body img,
-  .post-body iframe,
-  .post-body video {
-    width: 100%;
-    height: auto;
-  }
-
-  /* Ads stretch full width but keep aspect */
-  #adsconex-video-container,
-  [id^="div_adsconex"],
-  [id^="js_adsconex"] {
-    width: 100%;
-    max-width: 100%;
-    margin: 0.75rem 0;
-  }
-
-  .detail-title h1 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-  }
-}
-
 
 
 /* Responsive tốt cho khối nội dung */
@@ -598,8 +531,18 @@ img,
 }
 
 @media (max-width: 768px) {
-  table {
+  /* table {
     min-width: 600px;
+  } */
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .table-wrapper table {
+    width: 100%;
+    min-width: unset;
   }
 
   table th,
@@ -613,6 +556,8 @@ img,
     padding: 0;
     background: transparent;
   }
+
+  
 }
 
 @media (min-width: 768px) and (max-width: 959px) {
@@ -630,13 +575,6 @@ small table styles
   .table-wrapper td {
     padding: 0.5rem;
     font-size: 0.875rem; 
-  }
-}
-
-@media (max-width: 959px) {
-  body {
-    max-width: 100%;
-    margin: 0;
   }
 }
 
@@ -818,16 +756,6 @@ table & laptop
   .nav-links li a {
     color: white;
     padding: 0;
-  }
-
-  .ad-slot {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .ad-slot > * {
-    max-width: 100%;
   }
 
 }

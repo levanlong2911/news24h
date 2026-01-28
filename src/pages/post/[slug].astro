@@ -5,12 +5,19 @@ import Detail from '../../components/Detail.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import type { Post } from '../../types';
 import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
+import NotFound from '../404.astro';
 
 const { slug } = Astro.params;
+if (!slug) {
+  return Astro.rewrite('/404', { status: 404 });
+}
 
 // Fallback
 const emptyList: Post[] = [];
-let postData: any = null;
+let postData: {
+  post?: Post;
+  related_posts?: Post[];
+} | null = null;
 let postsRes: any = null;
 let ads: any = {};
 
@@ -40,16 +47,14 @@ try {
   // ❗ tuyệt đối không throw
 }
 
-// ❗ unwrap posts
-const posts: Post[] = postsRes?.items ?? emptyList;
-
 // ❗ nếu không có post → 404 SEO-safe
 if (!postData || !postData.post) {
-  return Astro.redirect('/404', 404);
+  return Astro.rewrite('/404', { status: 404 });
 }
 
 const post: Post = postData.post;
-const relatedPosts: Post[] = postData.related_posts || [];
+const relatedPosts: Post[] = postData.related_posts ?? [];
+const posts: Post[] = postsRes?.items ?? emptyList;
 
 const siteUrl = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 
