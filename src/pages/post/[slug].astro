@@ -45,7 +45,7 @@ const posts: Post[] = postsRes?.items ?? emptyList;
 
 // ❗ nếu không có post → 404 SEO-safe
 if (!postData || !postData.post) {
-  return new Response(null, { status: 404 });
+  return Astro.redirect('/404', 404);
 }
 
 const post: Post = postData.post;
@@ -55,8 +55,8 @@ const siteUrl = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 
 // Helpers SEO-safe
 const pageTitle = post.title;
-const pageDescription = post.description || post.title || 'Default Description';
-const pageImage = post.thumbnail || 'default.jpg';
+const pageDescription = post.description || post.title;
+const pageImage = post.thumbnail || '/default.jpg';
 const pageUrl = `${siteUrl}/post/${post.slug}`;
 const publishedAt = post.created_at || '';
 const updatedAt = post.updated_at || post.created_at || '';
