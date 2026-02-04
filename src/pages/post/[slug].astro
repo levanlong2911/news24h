@@ -49,7 +49,9 @@ try {
 
 // ❗ nếu không có post → 404 SEO-safe
 if (!postData || !postData.post) {
-  return Astro.rewrite('/404', { status: 404 });
+  return new Response(null, {
+    status: 404
+  });
 }
 
 const post: Post = postData.post;
