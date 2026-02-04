@@ -53,8 +53,8 @@ const safeRelated = Array.isArray(relatedPosts) ? relatedPosts : [];
   <!-- <div class="detail-ads-video">
     <ins class="aso-zone" data-zone="110513"></ins>
   </div> -->
+  <AdsPosition position="top" ads={ads?.top} />
   <div class="detail-content">
-    <ins class="aso-zone" data-zone="110513"></ins>
     <article class="post-body">
       {isBot ? (
         <div class="table-wrapper post-content" set:html={post.content} />
