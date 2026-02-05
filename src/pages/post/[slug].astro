@@ -5,7 +5,7 @@ import Detail from '../../components/Detail.astro';
 import Sidebar from '../../components/Sidebar.astro';
 import type { Post } from '../../types';
 import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
-import NotFound from '../404.astro';
+// import NotFound from '../404.astro';
 
 const { slug } = Astro.params;
 if (!slug) {
@@ -23,35 +23,30 @@ let ads: any = {};
 
 // PROMAX: không bao giờ throw
 try {
-  const results = await Promise.allSettled([
+  const [detail, posts, adsRes] = await Promise.allSettled([
     fetchPostDetail(slug),
     fetchPosts(1, 'v1'),
     fetchAds(),
   ]);
 
-  // post detail (QUAN TRỌNG NHẤT)
-  if (results[0].status === 'fulfilled') {
-    postData = results[0].value;
+  if (detail.status === 'fulfilled') {
+    postData = detail.value;
   }
 
-  // sidebar posts
-  if (results[1].status === 'fulfilled') {
-    postsRes = results[1].value;
+  if (posts.status === 'fulfilled') {
+    postsRes = posts.value;
   }
 
-  // ads
-  if (results[2].status === 'fulfilled') {
-    ads = results[2].value || {};
+  if (adsRes.status === 'fulfilled') {
+    ads = adsRes.value || {};
   }
 } catch {
-  // ❗ tuyệt đối không throw
+  // không làm gì cả
 }
 
-// ❗ nếu không có post → 404 SEO-safe
-if (!postData || !postData.post) {
-  return new Response(null, {
-    status: 404
-  });
+// ❗ Không có post → rewrite 404 (SEO + Facebook + Cloudflare SAFE)
+if (!postData?.post) {
+  return Astro.rewrite('/404', { status: 404 });
 }
 
 const post: Post = postData.post;
