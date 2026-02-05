@@ -6,7 +6,7 @@ import '../styles/global.css';
 import AdsPosition from '../components/ads/AdsPosition.astro';
 import type { AdsMap } from '../types/ads';
 
-const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
+const WEB_BASE = (import.meta.env.PUBLIC_API_WEB ?? 'https://newhots247.cafex.biz/').replace(/\/$/, '');
 const {
   pageTitle = 'News Day',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
