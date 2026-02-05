@@ -7,6 +7,27 @@ import type { Post } from '../../types';
 import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
 // import NotFound from '../404.astro';
 
+
+export async function getStaticPaths() {
+  const res = await fetch(
+    `${import.meta.env.PUBLIC_API_WEB}/posts/slugs`,
+    {
+      headers: {
+        Accept: 'application/json',
+        'X-Api-Key': import.meta.env.PUBLIC_API_KEY,
+      },
+    }
+  );
+
+  const json = await res.json();
+  const slugs: string[] = json?.data ?? [];
+
+  return slugs.map((slug) => ({
+    params: { slug },
+  }));
+}
+
+
 const { slug } = Astro.params;
 if (!slug) {
   return Astro.rewrite('/404', { status: 404 });
