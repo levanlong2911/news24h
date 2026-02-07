@@ -50,10 +50,10 @@ const safeRelated = Array.isArray(relatedPosts) ? relatedPosts : [];
       {category ? ` | ${category}` : ""}
     </p>
   </div>
-  <div class="detail-ads-video">
+  <!-- <div class="detail-ads-video">
     <div id="adsconex-video-container"></div>
-  </div>
-  <!-- <AdsPosition position="top" ads={ads?.top} /> -->
+  </div> -->
+  <AdsPosition position="top" ads={ads?.top} />
   <div class="detail-content">
     <article class="post-body">
       {isBot ? (
