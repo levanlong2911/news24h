@@ -262,6 +262,12 @@ table th:first-child {
   text-align: left;
 }
 
+.post-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
 /*ADS – CHỐNG ĐÈ TEXT / VỠ LAYOUT*/
 
 /* Wrapper bắt buộc cho mọi ads */
@@ -400,6 +406,45 @@ footer ul li a {
   font-weight: bold;
   line-height: 1.4;
 }
+
+/*See more*/
+.load-more-btn {
+  display: block;
+  margin: 10px auto 10px;
+  padding: 9px 12px;
+
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: #fff;
+
+  border: none;
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.45);
+}
+
+.load-more-btn:active {
+  transform: scale(0.96);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 
 
 /* Responsive tốt cho khối nội dung */

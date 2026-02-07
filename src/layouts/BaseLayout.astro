@@ -6,7 +6,7 @@ import '../styles/global.css';
 import AdsPosition from '../components/ads/AdsPosition.astro';
 import type { AdsMap } from '../types/ads';
 
-const WEB_BASE = (import.meta.env.PUBLIC_API_WEB ?? 'https://newhots247.cafex.biz/').replace(/\/$/, '');
+const WEB_BASE = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
 const {
   pageTitle = 'News Day',
   pageDescription = 'Hot news, updated quickly and accurately every day.',
@@ -18,6 +18,8 @@ const {
   authorName = 'News Day',
   ads = {} as AdsMap,
 } = Astro.props;
+// console.log("SITE:", import.meta.env.PUBLIC_API_WEB);
+// console.log("API:", import.meta.env.PUBLIC_API_BASE);
 
 ---
 
@@ -75,12 +77,12 @@ const {
 
     <Footer />
     <script type="module" src="/scripts/menu.js"></script>
-    <script>
+    <!-- <script>
       window.adsconex = window.adsconex || { cmd: [] };
       adsconex.cmd.push(function () {
         adsconex.run("cafex_default");
       });
-    </script>
+    </script> -->
     <script is:client="only">
       (() => {
         const DEFAULT_TIMEOUT = 3500;

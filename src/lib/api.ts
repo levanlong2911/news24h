@@ -10,8 +10,8 @@ type FetchOptions = {
 const memoryCache = new Map<string, any>();
 const inFlight = new Map<string, Promise<any>>();
 
-const API_KEY  = import.meta.env.PUBLIC_API_KEY || '';
-const API_BASE = (import.meta.env.PUBLIC_API_WEB ?? 'https://newhots247.cafex.biz/').replace(/\/$/, '');
+const API_KEY  = import.meta.env.PUBLIC_API_KEY;
+const API_BASE = import.meta.env.PUBLIC_API_BASE.replace(/\/$/, '');
 
 function buildURL(path: string) {
   if (/^https?:\/\//.test(path)) return path;

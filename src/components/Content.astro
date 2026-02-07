@@ -4,6 +4,7 @@ import type { Post } from "../types.ts";
 
 interface Props {
   posts?: Post[];
+  // nextPageUrl?: string | null;
   ads?: Record<string, any[]>;
 }
 
@@ -14,72 +15,195 @@ const inPostAds = ads?.["in-post"] || [];
 
 // base url an toàn (không dùng WEB_BASE)
 const BASE_URL = import.meta.env.PUBLIC_API_WEB || "";
+const API_BASE = import.meta.env.PUBLIC_API_BASE?.replace(/\/$/, "") || "";
+const API_KEY  = import.meta.env.PUBLIC_API_KEY || "";
 ---
 
-<section id="content">
-  {
-    safePosts.length === 0 && (
-      <p>No posts available.</p>
-    )
-  }
+<section id="content" data-api-base={API_BASE}
+  data-api-key={API_KEY}>
+  <div id="post-list" data-total={safePosts.length}>
+    {safePosts.length === 0 && <p>No posts available.</p>}
 
-  {
-    safePosts.map((post, index) => {
-      if (!post?.slug) return null;
+    {
+      safePosts.map((post) => {
+        if (!post?.slug) return null;
 
-      const title = post.title ?? "Untitled";
-      const thumbnail =
-        post.thumbnail || "/default.jpg";
+        const title = post.title ?? "Untitled";
+        const thumbnail = post.thumbnail || "/default.jpg";
+        const description = post.content?.replace(/<\/?[^>]+(>|$)/g, "")?.slice(0, 150) + "...";
 
-      const description =
-        post.content
-          ?.replace(/<\/?[^>]+(>|$)/g, "")
-          ?.slice(0, 150) + "...";
-
-      return (
-        <>
-          <div class="grid-content" key={post.id}>
-            <div class="post-img">
-              <a href={`/post/${post.slug}`} title={title}>
-                <img
-                  src={thumbnail}
-                  alt={title}
-                />
-              </a>
-            </div>
-
-            <div class="posts-title">
-              <div class="content-title">
+        return (
+          <>
+            <div class="grid-content" data-id={post.id}>
+              <div class="post-img">
                 <a href={`/post/${post.slug}`} title={title}>
-                  <h3 class="text-black font-bold">{title}</h3>
+                  <img src={thumbnail} alt={title} />
                 </a>
               </div>
 
-              <div class="content-date">
-                <span>
-                  {post.admin?.name},{" "}
-                  {post.updated_at
-                    ? new Date(post.updated_at).toLocaleDateString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                    : ""}
-                  {post.category?.name ? `, ${post.category.name}` : ""}
-                </span>
-              </div>
+              <div class="posts-title">
+                <div class="content-title">
+                  <a href={`/post/${post.slug}`} title={title}>
+                    <h3 class="text-black font-bold">{title}</h3>
+                  </a>
+                </div>
 
-              <div class="content-description">
-                <p>{description}</p>
+                <div class="content-date">
+                  <span>
+                    {post.admin?.name},{" "}
+                    {post.updated_at
+                      ? new Date(post.updated_at).toLocaleDateString("en-US", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      : ""}
+                    {post.category?.name ? `, ${post.category.name}` : ""}
+                  </span>
+                </div>
+
+                <div class="content-description">
+                  <p>{description}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* {(index + 1) % 2 === 0 && inPostAds?.length > 0 && (
+            {/* {(index + 1) % 2 === 0 && inPostAds?.length > 0 && (
             <PositionAd position="in-post" ads={ads} />
           )} */}
-        </>
-      );
-    })
-  }
+          </>
+        );
+      })
+    }
+  </div>
 </section>
+
+  <!-- nút backup -->
+  <button id="load-more-btn" class="load-more-btn">
+    SEE MORE
+  </button>
+</section>
+
+<script is:inline>
+  const content = document.getElementById("content");
+  const apiBase = content?.dataset.apiBase;
+  const apiKey  = content?.dataset.apiKey;
+
+  const list = document.getElementById("post-list");
+  const btn  = document.getElementById("load-more-btn");
+
+  let page = 1; // page 1 đã render SSR
+  let loading = false;
+  let hasMore = true;
+  let totalLoaded = Number(list?.dataset.total || 0);
+
+  const MAX_POSTS = 490;
+
+  async function loadMore() {
+    if (loading || !hasMore || totalLoaded >= MAX_POSTS) return;
+
+    loading = true;
+    btn.textContent = "Loading...";
+
+    try {
+      const nextPage = page + 1;
+
+      const res = await fetch(
+        `${apiBase}/posts?domain=${location.host}&page=${nextPage}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "X-Api-Key": apiKey
+          }
+        }
+      );
+
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const json = await res.json();
+      const items = json?.data?.items || [];
+
+      if (!items.length) {
+        hasMore = false;
+        btn.style.display = "none";
+        return;
+      }
+
+      page = nextPage;
+
+      for (const post of items) {
+        if (totalLoaded >= MAX_POSTS) break;
+
+        const title = post.title ?? "Untitled";
+        const thumbnail = post.thumbnail || "/default.jpg";
+        const description =
+          (post.content || "")
+            .replace(/<[^>]+>/g, "")
+            .slice(0, 150) + "...";
+
+        const date = post.updated_at
+          ? new Date(post.updated_at).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })
+          : "";
+
+        const author = post.admin?.name || "";
+        const category = post.category?.name ? `, ${post.category.name}` : "";
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "grid-content";
+        wrapper.dataset.id = post.id;
+
+        wrapper.innerHTML = `
+          <div class="post-img">
+            <a href="/post/${post.slug}" title="${title}">
+              <img src="${thumbnail}" alt="${title}" loading="lazy" />
+            </a>
+          </div>
+
+          <div class="posts-title">
+            <div class="content-title">
+              <a href="/post/${post.slug}" title="${title}">
+                <h3 class="text-black font-bold">${title}</h3>
+              </a>
+            </div>
+
+            <div class="content-date">
+              <span>
+                ${author}${author && date ? ", " : ""}${date}${category}
+              </span>
+            </div>
+
+            <div class="content-description">
+              <p>${description}</p>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(wrapper);
+        totalLoaded++;
+      }
+
+      hasMore = json?.data?.has_more === true;
+
+      if (!hasMore || totalLoaded >= MAX_POSTS) {
+        btn.style.display = "none";
+      }
+
+    } catch (e) {
+      console.error("Load more failed", e);
+    } finally {
+      loading = false;
+      btn.textContent = "SEE MORE";
+    }
+  }
+
+  btn?.addEventListener("click", loadMore);
+</script>
+
+
+
+
+
