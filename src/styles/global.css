@@ -1,4 +1,8 @@
 
+/* utility classes used in place of Tailwind */
+.text-black { color: #000; }
+.font-bold   { font-weight: 700; }
+
 /*variables*/
 :root {
   --primary: #f5f3f3;

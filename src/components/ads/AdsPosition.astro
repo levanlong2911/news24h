@@ -22,7 +22,7 @@ const hasAds = items.length > 0;
       ></div>
     ))}
 
-    <script is:client="load">
+    <script is:inline>
       document.querySelectorAll(
         '.ad-slot[data-ad-script]:not([data-loaded="1"])'
       ).forEach(el => {

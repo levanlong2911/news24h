@@ -9,8 +9,8 @@ import { fetchPostDetail, fetchPosts, fetchAds } from '../../lib/api';
 
 
 const { slug } = Astro.params;
-if (!slug) {
-  return Astro.rewrite('/404', { status: 404 });
+if (!slug || !/^[a-zA-Z0-9][a-zA-Z0-9\-_.]*$/.test(slug) || slug.length > 200) {
+  return Astro.rewrite('/404');
 }
 
 // Fallback
@@ -47,14 +47,17 @@ try {
 
 // ❗ Không có post → rewrite 404 (SEO + Facebook + Cloudflare SAFE)
 if (!postData?.post) {
-  return Astro.rewrite('/404', { status: 404 });
+  return Astro.rewrite('/404');
 }
 
 const post: Post = postData.post;
 const relatedPosts: Post[] = postData.related_posts ?? [];
 const posts: Post[] = postsRes?.items ?? emptyList;
 
-const siteUrl = import.meta.env.PUBLIC_API_WEB.replace(/\/$/, '');
+// Cloudflare CDN cache 2 phút, stale 5 phút
+Astro.response.headers.set('Cache-Control', 'public, max-age=120, stale-while-revalidate=300');
+
+const siteUrl = (import.meta.env.PUBLIC_API_WEB ?? '').replace(/\/$/, '');
 
 // Helpers SEO-safe
 const pageTitle = post.title;

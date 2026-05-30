@@ -7,11 +7,19 @@ type FetchOptions = {
   version?: string; // 👈 cache version từ Laravel
 };
 
+const CACHE_MAX = 500;
 const memoryCache = new Map<string, any>();
 const inFlight = new Map<string, Promise<any>>();
 
-const API_KEY  = import.meta.env.PUBLIC_API_KEY;
-const API_BASE = import.meta.env.PUBLIC_API_BASE.replace(/\/$/, '');
+function pruneCache() {
+  if (memoryCache.size <= CACHE_MAX) return;
+  // xoá entry cũ nhất (Map giữ thứ tự insert)
+  const firstKey = memoryCache.keys().next().value;
+  if (firstKey !== undefined) memoryCache.delete(firstKey);
+}
+
+const API_KEY  = import.meta.env.API_KEY ?? "";
+const API_BASE = (import.meta.env.PUBLIC_API_BASE ?? "").replace(/\/$/, "");
 
 function buildURL(path: string) {
   if (/^https?:\/\//.test(path)) return path;
@@ -96,12 +104,12 @@ async function safeRevalidate<T>(
       },
     });
 
-    if (!res.ok) throw new Error("Bad response");
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} — ${url}`);
 
     const json = await res.json();
 
     if (!json || json.success !== true) {
-      throw new Error("Invalid API payload");
+      throw new Error(`Invalid API payload from ${url}`);
     }
 
     const data = (json.data ?? fallback) as T;
@@ -111,10 +119,13 @@ async function safeRevalidate<T>(
       expire: Date.now() + ttl,
       staleUntil: Date.now() + stale,
     });
+    pruneCache();
 
     return data;
 
-  } catch {
+  } catch (e) {
+    const isTimeout = e instanceof Error && e.name === "AbortError";
+    console.error(`[api] ${isTimeout ? "timeout" : "fetch error"}: ${url}`, e instanceof Error ? e.message : e);
     const cached = memoryCache.get(key);
     return (cached?.data ?? fallback) as T;
   } finally {

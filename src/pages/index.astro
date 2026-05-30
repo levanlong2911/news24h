@@ -34,6 +34,9 @@ try {
 }
 
 const pageTitle = 'Home';
+
+// Cloudflare CDN cache 1 phút, stale 3 phút
+Astro.response.headers.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=180');
 ---
 
 <BaseLayout pageTitle={pageTitle} ads={ads}>

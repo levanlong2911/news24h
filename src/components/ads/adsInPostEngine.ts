@@ -1,31 +1,25 @@
-// src/components/ads/adsInPostEngine.ts
 import type { AdItem } from "../../types/ads";
 
-/**
- * SSR-safe HTML → DocumentFragment
- */
-function htmlToFragment(document: Document, html: string) {
-  const template = document.createElement("template");
-  template.innerHTML = html.trim();
-  return template.content;
+function makeTemplate(document: Document, html: string): HTMLTemplateElement {
+  const tpl = document.createElement("template");
+  tpl.innerHTML = html.trim();
+  return tpl;
 }
 
-export function applyAdsInPost(
-  document: Document,
-  ads: AdItem[] = []
-) {
-  if (!ads || !ads.length) return;
+function findAd(ads: AdItem[], marker: string): AdItem | null {
+  return ads.find(a => typeof a.script === "string" && a.script.includes(marker)) ?? null;
+}
 
-  let paragraphs: Element[] = [];
+export function applyAdsInPost(document: Document, ads: AdItem[] = []) {
+  if (!ads.length) return;
 
+  let paragraphs: Element[];
   try {
-    paragraphs = Array.from(
-      document.querySelectorAll("p")
-    ).filter(p => !p.closest("table, ul, ol, blockquote"));
+    paragraphs = Array.from(document.querySelectorAll("p"))
+      .filter(p => !p.closest("table, ul, ol, blockquote"));
   } catch {
-    return; // guard cho SSR lỗi DOM
+    return;
   }
-
   if (!paragraphs.length) return;
 
   /* =========================
@@ -37,16 +31,15 @@ export function applyAdsInPost(
     ads[0].script.includes("<ins") &&
     ads[0].script.includes("aso-zone")
   ) {
+    // parse HTML 1 lần duy nhất, clone cho mỗi vị trí
+    const tpl = makeTemplate(document, ads[0].script);
     let count = 0;
-
     for (const p of paragraphs) {
-      count++;
-      if (count % 3 !== 0) continue;
-
+      if (++count % 3 !== 0) continue;
       try {
-        p.after(htmlToFragment(document, ads[0].script));
-      } catch {
-        // không bao giờ để SSR chết
+        p.after(tpl.content.cloneNode(true));
+      } catch (e) {
+        console.error("[ads] inject aso-zone failed", e);
       }
     }
     return;
@@ -55,62 +48,34 @@ export function applyAdsInPost(
   /* =========================
      CASE 1: ADSCONEX
   ========================= */
+  const inPost1 = findAd(ads, "div_adsconex_banner_responsive");
+  const inPost2 = findAd(ads, "js_adsconex_parallax_1");
+  const inPost3 = findAd(ads, "js_adsconex_parallax_2");
 
-  const inPost1 = ads.find(a =>
-    typeof a.script === "string" &&
-    a.script.includes("div_adsconex_banner_responsive")
-  );
-
-  const inPost2 = ads.find(a =>
-    typeof a.script === "string" &&
-    a.script.includes("js_adsconex_parallax_1")
-  );
-
-  const inPost3 = ads.find(a =>
-    typeof a.script === "string" &&
-    a.script.includes("js_adsconex_parallax_2")
-  );
+  // parse static ads 1 lần
+  const tpl2 = inPost2 ? makeTemplate(document, inPost2.script) : null;
+  const tpl3 = inPost3 ? makeTemplate(document, inPost3.script) : null;
 
   let bannerIndex = 1;
 
   paragraphs.forEach((p, index) => {
     const pNum = index + 1;
-
     try {
-      // 🔹 in-post 2 → sau p3
-      if (pNum === 3 && inPost2) {
-        p.after(htmlToFragment(document, inPost2.script));
-      }
-
-      // 🔹 in-post 3 → sau p7
-      if (pNum === 7 && inPost3) {
-        p.after(htmlToFragment(document, inPost3.script));
-      }
+      if (pNum === 3 && tpl2) p.after(tpl2.content.cloneNode(true));
+      if (pNum === 7 && tpl3) p.after(tpl3.content.cloneNode(true));
 
       if (!inPost1) return;
 
-      // 🔹 sau p5, p9
-      if (pNum === 5 || pNum === 9) {
+      if (pNum === 5 || pNum === 9 || (pNum > 9 && (pNum - 9) % 2 === 0)) {
+        // thay tất cả instances (flag g) thay vì chỉ cái đầu tiên
         const html = inPost1.script.replace(
-          /div_adsconex_banner_responsive_\d+/,
+          /div_adsconex_banner_responsive_\d+/g,
           `div_adsconex_banner_responsive_${bannerIndex++}`
         );
-
-        p.after(htmlToFragment(document, html));
-        return;
+        p.after(makeTemplate(document, html).content);
       }
-
-      // 🔹 sau p9 → mỗi 2 p
-      if (pNum > 9 && (pNum - 9) % 2 === 0) {
-        const html = inPost1.script.replace(
-          /div_adsconex_banner_responsive_\d+/,
-          `div_adsconex_banner_responsive_${bannerIndex++}`
-        );
-
-        p.after(htmlToFragment(document, html));
-      }
-    } catch {
-      // tuyệt đối không throw
+    } catch (e) {
+      console.error("[ads] inject in-post failed at p" + pNum, e);
     }
   });
 }
