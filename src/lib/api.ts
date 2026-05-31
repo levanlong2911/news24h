@@ -4,7 +4,7 @@ type FetchOptions = {
   ttl?: number;
   stale?: number;
   timeout?: number;
-  version?: string; // 👈 cache version từ Laravel
+  version?: string;
 };
 
 const CACHE_MAX = 500;
@@ -13,12 +13,11 @@ const inFlight = new Map<string, Promise<any>>();
 
 function pruneCache() {
   if (memoryCache.size <= CACHE_MAX) return;
-  // xoá entry cũ nhất (Map giữ thứ tự insert)
   const firstKey = memoryCache.keys().next().value;
   if (firstKey !== undefined) memoryCache.delete(firstKey);
 }
 
-const API_KEY  = import.meta.env.API_KEY ?? "";
+const API_KEY  = import.meta.env.PUBLIC_API_KEY ?? "";
 const API_BASE = (import.meta.env.PUBLIC_API_BASE ?? "").replace(/\/$/, "");
 
 function buildURL(path: string) {
@@ -46,37 +45,23 @@ export async function apiFetch<T>(
   const now    = Date.now();
   const cached = memoryCache.get(key);
 
-  // ✅ cache còn hạn
   if (cached && cached.expire > now) {
     return cached.data as T;
   }
 
-  // ✅ stale-while-revalidate
   if (cached && cached.staleUntil > now) {
     void safeRevalidate(key, url, options, fallback, ttl, stale, timeoutMs);
     return cached.data as T;
   }
 
-  // ✅ chống duplicate request
   if (inFlight.has(key)) {
     return inFlight.get(key)!;
   }
 
-  const promise = safeRevalidate(
-    key,
-    url,
-    options,
-    fallback,
-    ttl,
-    stale,
-    timeoutMs
-  );
+  const promise = safeRevalidate(key, url, options, fallback, ttl, stale, timeoutMs);
 
   inFlight.set(key, promise);
-
-  promise.finally(() => {
-    inFlight.delete(key);
-  });
+  promise.finally(() => inFlight.delete(key));
 
   return promise;
 }
@@ -125,25 +110,24 @@ async function safeRevalidate<T>(
 
   } catch (e) {
     const isTimeout = e instanceof Error && e.name === "AbortError";
-    console.error(`[api] ${isTimeout ? "timeout" : "fetch error"}: ${url}`, e instanceof Error ? e.message : e);
+    console.error(
+      `[api] ${isTimeout ? "timeout" : "fetch error"}: ${url}`,
+      e instanceof Error ? e.message : e
+    );
     const cached = memoryCache.get(key);
     return (cached?.data ?? fallback) as T;
   } finally {
     clearTimeout(timer);
   }
 }
+
 export const fetchPosts = async (page = 1, version = "v1") => {
   const res = await apiFetch<any>(
     `posts?page=${page}`,
     {},
     { items: [], meta: null },
-    {
-      ttl: 30_000,
-      stale: 180_000,
-      version, // 👈 CacheVersion::POSTS
-    }
+    { ttl: 30_000, stale: 180_000, version }
   );
-
   return {
     items: res?.items ?? [],
     meta: res?.meta ?? null,
@@ -155,15 +139,9 @@ export const fetchPostDetail = async (slug: string, version = "v1") => {
     `posts/${slug}`,
     {},
     null,
-    {
-      ttl: 120_000,
-      stale: 600_000,
-      version, // 👈 CacheVersion::POST
-    }
+    { ttl: 120_000, stale: 600_000, version }
   );
-
   if (!res || !res.post) return null;
-
   return res;
 };
 
@@ -172,8 +150,5 @@ export const fetchAds = () =>
     "ads",
     {},
     {},
-    {
-      ttl: 300_000,
-      stale: 1_800_000,
-    }
+    { ttl: 300_000, stale: 1_800_000 }
   );
