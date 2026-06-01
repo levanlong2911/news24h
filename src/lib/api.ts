@@ -19,6 +19,9 @@ function pruneCache() {
 
 const API_KEY  = import.meta.env.API_KEY || (typeof process !== 'undefined' ? process.env.API_KEY : '') || "";
 const API_BASE = ((import.meta.env.PUBLIC_API_BASE || (typeof process !== 'undefined' ? process.env.PUBLIC_API_BASE : '')) ?? "").replace(/\/$/, "");
+const SITE_URL = ((import.meta.env.PUBLIC_API_WEB || (typeof process !== 'undefined' ? process.env.PUBLIC_API_WEB : '')) ?? "").replace(/\/$/, "");
+const _domain  = SITE_URL.replace(/^https?:\/\//, "");
+const DOMAIN   = _domain.includes("localhost") ? "" : _domain;
 
 function buildURL(path: string) {
   if (/^https?:\/\//.test(path)) return path;
@@ -123,7 +126,7 @@ async function safeRevalidate<T>(
 
 export const fetchPosts = async (page = 1, version = "v1") => {
   const res = await apiFetch<any>(
-    `posts?page=${page}`,
+    `posts?page=${page}${DOMAIN ? `&domain=${encodeURIComponent(DOMAIN)}` : ""}`,
     {},
     { items: [], meta: null },
     { ttl: 30_000, stale: 180_000, version }
@@ -136,7 +139,7 @@ export const fetchPosts = async (page = 1, version = "v1") => {
 
 export const fetchPostDetail = async (slug: string, version = "v1") => {
   const res = await apiFetch<any>(
-    `posts/${slug}`,
+    `posts/${slug}?domain=${encodeURIComponent(DOMAIN)}`,
     {},
     null,
     { ttl: 120_000, stale: 600_000, version }
@@ -147,7 +150,7 @@ export const fetchPostDetail = async (slug: string, version = "v1") => {
 
 export const fetchAds = () =>
   apiFetch<AdsMap>(
-    "ads",
+    `ads?domain=${encodeURIComponent(DOMAIN)}`,
     {},
     {},
     { ttl: 300_000, stale: 1_800_000 }
