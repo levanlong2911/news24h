@@ -17,7 +17,7 @@ function pruneCache() {
   if (firstKey !== undefined) memoryCache.delete(firstKey);
 }
 
-const API_KEY  = import.meta.env.PUBLIC_API_KEY || (typeof process !== 'undefined' ? process.env.PUBLIC_API_KEY : '') || "";
+const API_KEY  = import.meta.env.API_KEY || (typeof process !== 'undefined' ? process.env.API_KEY : '') || "";
 const API_BASE = ((import.meta.env.PUBLIC_API_BASE || (typeof process !== 'undefined' ? process.env.PUBLIC_API_BASE : '')) ?? "").replace(/\/$/, "");
 
 function buildURL(path: string) {
