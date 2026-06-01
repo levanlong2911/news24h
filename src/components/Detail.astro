@@ -1,7 +1,7 @@
 ---
 import type { Post } from "../types.ts";
 import PostContent from "../components/PostContent.astro";
-import AdsPosition from "../components/ads/AdsPosition.astro";
+import AdsPosition from "./ads/AdsPosition.astro";
 import type { AdItem } from "../types/ads";
 
 const { post, relatedPosts, ads } = Astro.props as {
@@ -77,7 +77,7 @@ const safeRelated = Array.isArray(relatedPosts) ? relatedPosts : [];
         if (!slug) return null;
 
         return (
-          <div class="related-item" key={item.id}>
+          <div class="related-item">
             <a href={`/post/${slug}`}>
               <img
                 src={item.thumbnail || "/default.jpg"}

@@ -18,6 +18,7 @@ const hasAds = items.length > 0;
     {items.map(item => (
       <div
         class={`ad-slot ad-${position}`}
+        data-ads-position={position}
         data-ad-script={encodeURIComponent(item.script)}
       ></div>
     ))}

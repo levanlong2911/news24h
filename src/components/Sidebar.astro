@@ -14,7 +14,7 @@ if (!Array.isArray(posts) || posts.length === 0) {
 
   <ul>
     {
-      posts.slice(0, 5).map((post) => {
+      posts.slice(0, 6).map((post) => {
         // ✅ Fallback an toàn
         const slug = post.slug ?? '';
         const title = post.title ?? 'Untitled';
@@ -26,13 +26,10 @@ if (!Array.isArray(posts) || posts.length === 0) {
         if (!slug) return null;
 
         return (
-          <li key={post.id}>
+          <li>
             <div class="list-img">
               <a href={`/post/${slug}`} title={title}>
-                {/* <img
-                  src={thumbnail}
-                  alt={title}
-                /> */}
+                <img src={thumbnail} alt={title} loading="lazy" />
                 <h3>{title}</h3>
               </a>
             </div>
