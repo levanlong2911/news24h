@@ -54,8 +54,7 @@ const post: Post = postData.post;
 const relatedPosts: Post[] = postData.related_posts ?? [];
 const posts: Post[] = postsRes?.items ?? emptyList;
 
-// Cloudflare CDN cache 2 phút, stale 5 phút
-Astro.response.headers.set('Cache-Control', 'public, max-age=120, stale-while-revalidate=300');
+Astro.response.headers.set('Cache-Control', 'no-store');
 
 const siteUrl = (import.meta.env.PUBLIC_API_WEB ?? '').replace(/\/$/, '');
 
