@@ -3,15 +3,7 @@ const { ads = [] } = Astro.props as {
   ads?: { script: string }[];
 };
 
-// Gom tất cả script thành 1 string
-const raw = ads
-  .map(a => a.script)
-  .join("\n");
-
-// Tách từng <script ...></script>
-const scripts = raw.match(/<script[\s\S]*?<\/script>/gi) ?? [];
+const raw = ads.map(a => a.script).join("\n");
 ---
 <!-- HEADER ADS -->
-{scripts.map(code => (
-  <Fragment slot="head" set:html={code} />
-))}
+<Fragment set:html={raw} />
