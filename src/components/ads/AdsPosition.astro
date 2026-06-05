@@ -38,11 +38,24 @@ const hasAds = items.length > 0;
           tmp.innerHTML = html;
 
           el.innerHTML = "";
-          while (tmp.firstChild) {
-            el.appendChild(tmp.firstChild);
-          }
 
-          // ❌ network không bơm DOM → remove slot
+          tmp.childNodes.forEach(node => {
+            if (node.nodeName === "SCRIPT") {
+              const s = document.createElement("script");
+              for (const attr of node.attributes) {
+                s.setAttribute(attr.name, attr.value);
+              }
+              if (node.src) {
+                s.src = node.src;
+              } else {
+                s.textContent = node.textContent;
+              }
+              el.appendChild(s);
+            } else {
+              el.appendChild(node.cloneNode(true));
+            }
+          });
+
           if (!el.firstChild) {
             el.remove();
           }
