@@ -1,5 +1,6 @@
 ---
 import HeaderAds from '../components/ads/HeaderAds.astro';
+import AdsPosition from '../components/ads/AdsPosition.astro';
 import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
@@ -70,6 +71,7 @@ const {
   <body>
     <Navbar />
     <!-- TOP ADS -->
+    {ads?.top?.length && <AdsPosition position="top" ads={ads.top} />}
     <main>
       <slot />
     </main>
