@@ -49,6 +49,7 @@ const safeRelated = Array.isArray(relatedPosts) ? relatedPosts : [];
       {category ? ` | ${category}` : ""}
     </p>
   </div>
+  <AdsPosition position="top" ads={ads?.top} />
   <div class="detail-content">
     <article class="post-body">
       {isBot ? (

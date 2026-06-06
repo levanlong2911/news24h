@@ -1,6 +1,5 @@
 ---
 import HeaderAds from '../components/ads/HeaderAds.astro';
-import AdsPosition from '../components/ads/AdsPosition.astro';
 import Footer from '../components/Footer.astro';
 import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
@@ -51,17 +50,15 @@ const {
 
     <!-- Structured Data -->
     {isArticle && (
-      <script type="application/ld+json" is:inline>
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "NewsArticle",
-          headline: pageTitle,
-          image: [pageImage],
-          datePublished: publishedAt,
-          dateModified: updatedAt || publishedAt,
-          author: [{ "@type": "Person", name: authorName }],
-        })}
-      </script>
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        headline: pageTitle,
+        image: [pageImage],
+        datePublished: publishedAt,
+        dateModified: updatedAt || publishedAt,
+        author: [{ "@type": "Person", name: authorName }],
+      })} />
     )}
     <slot name="head" />
     <!-- HEADER ADS -->
@@ -70,8 +67,6 @@ const {
   </head>
   <body>
     <Navbar />
-    <!-- TOP ADS -->
-    {ads?.top?.length && <AdsPosition position="top" ads={ads.top} />}
     <main>
       <slot />
     </main>
