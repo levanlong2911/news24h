@@ -61,12 +61,13 @@ export function applyAdsInPost(document: Document, ads: AdItem[] = []) {
   paragraphs.forEach((p, index) => {
     const pNum = index + 1;
     try {
-      if (pNum === 2 && tpl2) p.after(tpl2.content.cloneNode(true));
+      if (pNum === 3 && tpl2) p.after(tpl2.content.cloneNode(true));
       if (pNum === 7 && tpl3) p.after(tpl3.content.cloneNode(true));
 
       if (!inPost1) return;
 
-      if (pNum >= 3 && pNum !== 7) {
+      if (pNum === 5 || pNum === 9 || (pNum > 9 && (pNum - 9) % 2 === 0)) {
+        // thay tất cả instances (flag g) thay vì chỉ cái đầu tiên
         const html = inPost1.script.replace(
           /div_adsconex_banner_responsive_\d+/g,
           `div_adsconex_banner_responsive_${bannerIndex++}`

@@ -281,10 +281,8 @@ table td:first-child, table th:first-child { text-align: left; }
 .in-post-ad {
   width: 100%;
   margin: 5px 0;
-  min-height: 250px;
   display: block;
   overflow: hidden;
-  contain: layout paint;
   z-index: 0;
 }
 
@@ -623,7 +621,6 @@ footer ul li a:hover {
   /* detail */
   .detail-title h1 { font-size: 1.8rem; }
   .post-body { font-size: 1.1rem; }
-  .ad-slot { min-height: 280px; }
 
   .related-posts { margin: 2.5rem 0; }
 }
@@ -646,5 +643,4 @@ footer ul li a:hover {
   }
 
   .detail-title h1 { font-size: 1.9rem; }
-  .ad-slot { min-height: 300px; }
 }
