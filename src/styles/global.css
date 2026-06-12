@@ -201,14 +201,18 @@ main {
 .post-body h3 { font-size: 1.15rem; font-weight: 500; }
 .post-body h4 { font-size: 1.1rem; font-weight: 500; }
 
-.post-body img,
-.post-body iframe,
-.post-body video {
+.post-body img {
   max-width: 100%;
   height: auto;
   display: block;
   margin: 0.5rem auto;
   border-radius: 8px;
+}
+
+.post-body iframe,
+.post-body video {
+  max-width: 100%;
+  display: block;
 }
 
 .post-body blockquote {
@@ -276,21 +280,6 @@ table td:first-child, table th:first-child { text-align: left; }
 }
 
 /* ===== ADS ===== */
-
-#adsconex-video-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  min-height: 200px;
-  overflow: hidden;
-  margin: 1rem 0;
-}
-
-#adsconex-video-container iframe,
-#adsconex-video-container video {
-  width: 100% !important;
-  height: 100% !important;
-  position: relative !important;
-}
 
 /* ===== SIDEBAR ===== */
 #silebar {
