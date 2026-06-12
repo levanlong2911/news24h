@@ -50,7 +50,7 @@ const {
 
     <!-- Structured Data -->
     {isArticle && (
-      <script type="application/ld+json" set:html={JSON.stringify({
+      <script is:inline type="application/ld+json" set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         headline: pageTitle,
@@ -72,39 +72,6 @@ const {
     </main>
 
     <Footer />
-    <script is:inline>
-      (() => {
-        const DEFAULT_TIMEOUT = 3500;
-        const MIN_HEIGHT = 50;
-
-        function checkSlot(slot) {
-          const timeout =
-            Number(slot.dataset.adsTimeout) || DEFAULT_TIMEOUT;
-
-          setTimeout(() => {
-            const iframes = slot.querySelectorAll("iframe");
-            const height = slot.offsetHeight;
-
-            if (!iframes.length || height < MIN_HEIGHT) {
-              console.warn(
-                "[ADS FAIL]",
-                slot.dataset.adsPosition
-              );
-              slot.remove();
-            } else {
-              console.log(
-                "[ADS OK]",
-                slot.dataset.adsPosition
-              );
-            }
-          }, timeout);
-        }
-
-        document
-          .querySelectorAll(".ad-slot")
-          .forEach(checkSlot);
-      })();
-    </script>
 
   </body>
 </html>
