@@ -276,13 +276,6 @@ table td:first-child, table th:first-child { text-align: left; }
 }
 
 /* ===== ADS ===== */
-.ad-slot,
-.ad-in-post,
-.in-post-ad {
-  width: 100%;
-  margin: 5px 0;
-  display: block;
-}
 
 #adsconex-video-container {
   width: 100%;
